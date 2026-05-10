@@ -26,7 +26,7 @@ vi.mock('../../components/PageHeader/PageHeader.css', () => ({
   summary: 'summary',
   title: 'title',
 }))
-vi.mock('./WatchlistPage.css', () => ({
+vi.mock('../../components/WatchlistCard/WatchlistCard.css', () => ({
   actionLink: 'actionLink',
   actions: 'actions',
   button: 'button',
@@ -35,20 +35,22 @@ vi.mock('./WatchlistPage.css', () => ({
   detailGrid: 'detailGrid',
   detailLabel: 'detailLabel',
   detailValue: 'detailValue',
-  grid: 'grid',
   instrumentName: 'instrumentName',
   meta: 'meta',
   negative: 'negative',
-  page: 'page',
   positive: 'positive',
   quoteChange: 'quoteChange',
   quoteLabel: 'quoteLabel',
   quotePanel: 'quotePanel',
   quoteValue: 'quoteValue',
   removeButton: 'removeButton',
-  shell: 'shell',
   stretchedLink: 'stretchedLink',
   symbol: 'symbol',
+}))
+vi.mock('./WatchlistPage.css', () => ({
+  grid: 'grid',
+  page: 'page',
+  shell: 'shell',
 }))
 
 const showWatchlistPage = () => {
