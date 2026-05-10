@@ -66,7 +66,11 @@ const SearchPage: FC = () => {
         )}
 
         {shouldSearch && isFetching && (
-          <LoadingState message="Searching instruments..." />
+          <LoadingState
+            title="Searching instruments"
+            message="Matching results will appear here as they load."
+            variant="search-results"
+          />
         )}
 
         {shouldSearch && isError && (

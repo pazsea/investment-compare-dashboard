@@ -56,8 +56,33 @@ vi.mock('../../components/ErrorState/ErrorState.css', () => ({
 }))
 
 vi.mock('../../components/LoadingState/LoadingState.css', () => ({
+  actionSkeleton: 'actionSkeleton',
+  actionRow: 'actionRow',
+  cardActions: 'cardActions',
+  cardBody: 'cardBody',
+  cardGrid: 'cardGrid',
+  cardHeader: 'cardHeader',
+  cardSkeleton: 'cardSkeleton',
   container: 'container',
+  detailsActions: 'detailsActions',
+  detailsHeader: 'detailsHeader',
+  detailsMeta: 'detailsMeta',
+  detailsMetaPill: 'detailsMetaPill',
+  detailsMetrics: 'detailsMetrics',
+  detailsSkeleton: 'detailsSkeleton',
+  detailsSymbol: 'detailsSymbol',
+  detailsTitle: 'detailsTitle',
   message: 'message',
+  metaRow: 'metaRow',
+  metricLabelSkeleton: 'metricLabelSkeleton',
+  metricSkeleton: 'metricSkeleton',
+  metricValueSkeleton: 'metricValueSkeleton',
+  skeletonAccent: 'skeletonAccent',
+  skeletonButton: 'skeletonButton',
+  skeletonChip: 'skeletonChip',
+  skeletonLine: 'skeletonLine',
+  skeletonLineShort: 'skeletonLineShort',
+  skeletonLineWide: 'skeletonLineWide',
   title: 'title',
 }))
 

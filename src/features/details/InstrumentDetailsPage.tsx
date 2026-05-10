@@ -114,7 +114,11 @@ const InstrumentDetailsPage: FC = () => {
     <main className={styles.page}>
       <div className={styles.shell}>
         {isFetching && (
-          <LoadingState message="Loading instrument details..." />
+          <LoadingState
+            title="Loading instrument details"
+            message="Pricing, exchange data, and actions are on the way."
+            variant="details"
+          />
         )}
 
         {isError && (

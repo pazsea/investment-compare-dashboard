@@ -1,6 +1,15 @@
-import { style } from '@vanilla-extract/css'
+import { keyframes, style } from '@vanilla-extract/css'
 
 import { breakpoints, vars } from '../../styles/theme.css'
+
+const shimmer = keyframes({
+  '0%': {
+    backgroundPosition: '100% 0',
+  },
+  '100%': {
+    backgroundPosition: '-100% 0',
+  },
+})
 
 export const shell = style({
   position: 'relative',
@@ -155,6 +164,7 @@ export const skeletonItem = style({
   display: 'grid',
   gap: vars.space.sm,
   padding: vars.space.md,
+  border: `1px solid ${vars.colors.border}`,
   borderRadius: vars.radii.sm,
   background: vars.colors.surfaceElevated,
 })
@@ -162,5 +172,13 @@ export const skeletonItem = style({
 export const skeletonBar = style({
   height: '12px',
   borderRadius: vars.radii.full,
-  background: vars.colors.border,
+  background: `linear-gradient(90deg, ${vars.colors.surfaceElevated} 0%, ${vars.colors.border} 50%, ${vars.colors.surfaceElevated} 100%)`,
+  backgroundSize: '200% 100%',
+  animation: `${shimmer} 1.6s ease-in-out infinite`,
+
+  selectors: {
+    '&:last-child': {
+      width: '72%',
+    },
+  },
 })
