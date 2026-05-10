@@ -4,6 +4,10 @@ Investment Compare Dashboard is a polished React + TypeScript fintech demo app b
 
 The project is intentionally frontend-focused. It demonstrates clean state boundaries, typed API mapping, responsive UI.
 
+## Small demo
+
+https://github.com/user-attachments/assets/f0fde0f5-7238-4eb4-9082-c87399180a8b
+
 ## Tech Stack
 
 - React 19 + TypeScript
