@@ -1,31 +1,31 @@
-import type { Instrument, InstrumentQuote } from '../../types/instrument'
+import type { Instrument, InstrumentProfile } from '../../types/instrument'
 import { getInstrumentDetailsPath } from '../../utils/instrumentRoutes'
 
-export const formatWatchlistPrice = (quote?: InstrumentQuote) => {
-  if (!quote) {
+export const formatWatchlistPrice = (profile?: InstrumentProfile) => {
+  if (!profile || profile.price === undefined) {
     return 'Kurs saknas'
   }
 
-  const currency = quote.currency ?? 'USD'
+  const currency = profile.currency ?? 'USD'
 
   try {
     return new Intl.NumberFormat('sv-SE', {
       currency,
       style: 'currency',
-    }).format(quote.price)
+    }).format(profile.price)
   } catch {
-    return `${quote.price.toFixed(2)} ${currency}`
+    return `${profile.price.toFixed(2)} ${currency}`
   }
 }
 
-export const formatWatchlistChange = (quote?: InstrumentQuote) => {
-  if (!quote) {
+export const formatWatchlistChange = (profile?: InstrumentProfile) => {
+  if (!profile || profile.change === undefined || profile.changesPercentage === undefined) {
     return 'Förändring saknas'
   }
 
-  const prefix = quote.change > 0 ? '+' : ''
+  const prefix = profile.change > 0 ? '+' : ''
 
-  return `${prefix}${quote.change.toFixed(2)} (${prefix}${quote.changesPercentage.toFixed(2)}%)`
+  return `${prefix}${profile.change.toFixed(2)} (${prefix}${profile.changesPercentage.toFixed(2)}%)`
 }
 
 export const getInstrumentFocusLabel = (instrument: Instrument) => {

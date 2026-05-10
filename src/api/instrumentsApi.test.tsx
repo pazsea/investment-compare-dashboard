@@ -10,13 +10,26 @@ import { setupServer } from 'msw/node'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 const server = setupServer(
-  http.get('https://financialmodelingprep.com/api/v3/search-ticker', () => {
+  http.get('https://financialmodelingprep.com/stable/search-symbol', () => {
     return HttpResponse.json([
       {
         symbol: 'NVDA',
         name: 'NVIDIA Corporation',
         currency: 'USD',
         exchangeShortName: 'NASDAQ',
+      },
+    ])
+  }),
+  http.get('https://financialmodelingprep.com/stable/search-name', () => {
+    return HttpResponse.json([])
+  }),
+  http.get('https://financialmodelingprep.com/stable/profile', () => {
+    return HttpResponse.json([
+      {
+        symbol: 'NVDA',
+        companyName: 'NVIDIA Corporation',
+        exchange: 'NASDAQ',
+        sector: 'Technology',
       },
     ])
   }),
@@ -65,6 +78,87 @@ describe('when RTK Query searches with the FMP API enabled', () => {
         currency: 'USD',
         exchange: 'NASDAQ',
       })
+    })
+  })
+
+  it('should map the FMP profile response into instrument profiles', async () => {
+    vi.stubEnv('VITE_USE_FMP_API', 'true')
+    vi.stubEnv('VITE_FMP_API_KEY', 'test-key')
+
+    const { instrumentsApi, useGetInstrumentProfileQuery } = await import('./instrumentsApi')
+    const testStore = configureStore({
+      reducer: {
+        [instrumentsApi.reducerPath]: instrumentsApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(instrumentsApi.middleware),
+    })
+
+    const Wrapper = (props: { children: ReactNode }) => {
+      return <Provider store={testStore}>{props.children}</Provider>
+    }
+
+    const { result } = renderHook(() => useGetInstrumentProfileQuery('nvda'), {
+      wrapper: Wrapper,
+    })
+
+    await waitFor(() => {
+      expect(result.current.data).toEqual({
+        symbol: 'NVDA',
+        name: 'NVIDIA Corporation',
+        currency: undefined,
+        exchange: 'NASDAQ',
+        industry: undefined,
+        website: undefined,
+        description: undefined,
+        ceo: undefined,
+        sector: 'Technology',
+        country: undefined,
+        fullTimeEmployees: undefined,
+        city: undefined,
+        state: undefined,
+        image: undefined,
+        isEtf: undefined,
+        isFund: undefined,
+        marketCap: undefined,
+        volume: undefined,
+        price: undefined,
+        change: undefined,
+        changesPercentage: undefined,
+      })
+    })
+  })
+
+  it('should surface an error when both live search requests fail', async () => {
+    server.use(
+      http.get('https://financialmodelingprep.com/stable/search-symbol', () => {
+        return HttpResponse.json({ message: 'search failed' }, { status: 500 })
+      }),
+      http.get('https://financialmodelingprep.com/stable/search-name', () => {
+        return HttpResponse.json({ message: 'search failed' }, { status: 500 })
+      }),
+    )
+
+    vi.stubEnv('VITE_USE_FMP_API', 'true')
+    vi.stubEnv('VITE_FMP_API_KEY', 'test-key')
+
+    const { instrumentsApi, useSearchInstrumentsQuery } = await import('./instrumentsApi')
+    const testStore = configureStore({
+      reducer: {
+        [instrumentsApi.reducerPath]: instrumentsApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(instrumentsApi.middleware),
+    })
+
+    const Wrapper = (props: { children: ReactNode }) => {
+      return <Provider store={testStore}>{props.children}</Provider>
+    }
+
+    const { result } = renderHook(() => useSearchInstrumentsQuery('fail'), {
+      wrapper: Wrapper,
+    })
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true)
     })
   })
 })

@@ -4,16 +4,15 @@ import { useLocation, useParams } from 'react-router-dom'
 import clsx from 'clsx'
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 
-import { canUseLiveQuoteForInstrument, canUseLiveQuoteForSymbol } from '../../api/fmpAvailability'
-import { useGetInstrumentQuoteQuery } from '../../api/instrumentsApi'
+import { useGetInstrumentProfileQuery } from '../../api/instrumentsApi'
+import { inferInstrumentType } from '../../api/fmpMappers'
 import { EmptyState } from '../../components/EmptyState'
 import { ErrorState } from '../../components/ErrorState'
 import { LoadingState } from '../../components/LoadingState'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import { useWatchlist } from '../../hooks/useWatchlist'
-import { findMockInstrument } from '../../mocks/instruments'
 import { vars } from '../../styles/theme.css'
-import type { Instrument, InstrumentQuote } from '../../types/instrument'
+import type { Instrument, InstrumentProfile } from '../../types/instrument'
 import { getExchangeLabel, getInstrumentTypeLabel } from '../../utils/instrumentPresentation'
 import { isDetailsLocationState } from './detailsTypeguards'
 import {
@@ -25,50 +24,40 @@ import {
 
 import * as styles from './InstrumentDetailsPage.css'
 
-const inferInstrumentType = (symbol: string, name: string): Instrument['type'] => {
-  const normalizedSymbol = symbol.toUpperCase()
-  const normalizedName = name.toLowerCase()
-
-  if (normalizedSymbol.endsWith('USD') && !normalizedSymbol.includes('.')) {
-    return 'crypto'
-  }
-
-  if (normalizedName.includes(' etf') || normalizedName.includes('exchange traded fund')) {
-    return 'etf'
-  }
-
-  if (normalizedName.includes('fund')) {
-    return 'fund'
-  }
-
-  return 'stock'
-}
-
-const createInstrumentFromQuote = (quote: InstrumentQuote): Instrument => {
+const createInstrumentFromProfile = (profile: InstrumentProfile): Instrument => {
   return {
-    type: inferInstrumentType(quote.symbol, quote.name),
-    symbol: quote.symbol,
-    name: quote.name,
-    currency: quote.currency,
-    exchange: quote.exchange,
+    type: profile.isFund ? 'fund' : profile.isEtf ? 'etf' : inferInstrumentType(profile.symbol, profile.name),
+    symbol: profile.symbol,
+    name: profile.name,
+    currency: profile.currency,
+    exchange: profile.exchange,
+    ...(profile.sector ? { sector: profile.sector } : {}),
   }
 }
 
-const formatPrice = (quote: InstrumentQuote) => {
-  const currency = quote.currency ?? 'USD'
+const formatPrice = (profile: InstrumentProfile) => {
+  if (profile.price === undefined) {
+    return 'Kurs saknas'
+  }
+
+  const currency = profile.currency ?? 'USD'
 
   try {
     return new Intl.NumberFormat('sv-SE', {
       currency,
       style: 'currency',
-    }).format(quote.price)
+    }).format(profile.price)
   } catch {
-    return `${quote.price.toFixed(2)} ${currency}`
+    return `${profile.price.toFixed(2)} ${currency}`
   }
 }
 
-const formatCompactPrice = (quote: InstrumentQuote) => {
-  const currency = quote.currency ?? 'USD'
+const formatCompactPrice = (profile: InstrumentProfile) => {
+  if (profile.price === undefined) {
+    return 'Kurs saknas'
+  }
+
+  const currency = profile.currency ?? 'USD'
 
   try {
     return new Intl.NumberFormat('sv-SE', {
@@ -76,16 +65,20 @@ const formatCompactPrice = (quote: InstrumentQuote) => {
       notation: 'compact',
       style: 'currency',
       maximumFractionDigits: 2,
-    }).format(quote.price)
+    }).format(profile.price)
   } catch {
-    return `${quote.price.toFixed(2)} ${currency}`
+    return `${profile.price.toFixed(2)} ${currency}`
   }
 }
 
-const formatChange = (quote: InstrumentQuote) => {
-  const changePrefix = quote.change > 0 ? '+' : ''
+const formatChange = (profile: InstrumentProfile) => {
+  if (profile.change === undefined || profile.changesPercentage === undefined) {
+    return 'Förändring saknas'
+  }
 
-  return `${changePrefix}${quote.change.toFixed(2)} (${changePrefix}${quote.changesPercentage.toFixed(2)}%)`
+  const changePrefix = profile.change > 0 ? '+' : ''
+
+  return `${changePrefix}${profile.change.toFixed(2)} (${changePrefix}${profile.changesPercentage.toFixed(2)}%)`
 }
 
 const InstrumentDetailsPage: FC = () => {
@@ -93,16 +86,12 @@ const InstrumentDetailsPage: FC = () => {
   const location = useLocation()
   const locationState = isDetailsLocationState(location.state) ? location.state : undefined
   const symbol = params.symbol?.trim().toUpperCase() ?? ''
-  const fallbackInstrument = findMockInstrument(symbol)
-  const routeInstrument = locationState?.instrument ?? fallbackInstrument
-  const shouldFetchLiveQuote = routeInstrument
-    ? canUseLiveQuoteForInstrument(routeInstrument)
-    : canUseLiveQuoteForSymbol(symbol)
-  const { data: quote, isError, isFetching } = useGetInstrumentQuoteQuery(symbol, {
-    skip: !symbol || !shouldFetchLiveQuote,
+  const routeInstrument = locationState?.instrument
+  const { data: profile, isError, isFetching } = useGetInstrumentProfileQuery(symbol, {
+    skip: !symbol,
   })
-  const instrument =
-    routeInstrument ?? (quote ? createInstrumentFromQuote(quote) : undefined)
+  const profileInstrument = profile ? createInstrumentFromProfile(profile) : undefined
+  const instrument = routeInstrument ?? profileInstrument
   const { addToCompare, canAddToCompare, isInCompare, removeFromCompare } = useCompareSelection()
   const { addToWatchlist, isInWatchlist, removeFromWatchlist } = useWatchlist()
   const isSelectedForCompare = instrument ? isInCompare(instrument.symbol) : false
@@ -113,17 +102,18 @@ const InstrumentDetailsPage: FC = () => {
   const watchlistButtonClassName = clsx(styles.button, isSavedToWatchlist && styles.selectedButton)
   const changeClassName = clsx(
     styles.metricValue,
-    quote && quote.change >= 0 ? styles.positive : styles.negative,
+    profile && (profile.change ?? 0) >= 0 ? styles.positive : styles.negative,
   )
   const heroChangeClassName = clsx(
     styles.heroChange,
-    quote && quote.change >= 0 ? styles.positive : styles.negative,
+    profile && (profile.change ?? 0) >= 0 ? styles.positive : styles.negative,
   )
   const isCompareDisabled = !isSelectedForCompare && !canAddToCompare
   const focus = instrument ? getInstrumentFocus(instrument) : undefined
   const narrative = instrument ? getInstrumentNarrative(instrument) : undefined
-  const series = quote ? getDetailsSeries(quote) : []
-  const trendLabel = quote ? getTrendLabel(quote) : undefined
+  const series = profile?.price !== undefined ? getDetailsSeries(profile) : []
+  const trendLabel = profile ? getTrendLabel(profile) : undefined
+  const showErrorState = isError && !instrument
 
   const handleCompareAction = useCallback(() => {
     if (!instrument) {
@@ -157,18 +147,18 @@ const InstrumentDetailsPage: FC = () => {
         {isFetching && (
           <LoadingState
             title="Laddar instrumentdetaljer"
-            message="Kursdata, marknadsinformation och åtgärder är på väg."
+            message="Profil, marknadsinformation och åtgärder är på väg."
             variant="details"
           />
         )}
 
-        {isError && <ErrorState message="Instrumentdetaljer är inte tillgängliga just nu." />}
+        {showErrorState && <ErrorState message="Instrumentdetaljer är inte tillgängliga just nu." />}
 
-        {!isFetching && !isError && !instrument && (
+        {!isFetching && !showErrorState && !instrument && (
           <EmptyState message={`Inga detaljer hittades för ${symbol || 'det här instrumentet'}.`} />
         )}
 
-        {!isFetching && !isError && instrument && (
+        {!isFetching && !showErrorState && instrument && (
           <section className={styles.panel} aria-labelledby="instrument-details-heading">
             <header className={styles.hero}>
               <div className={styles.heroHeader}>
@@ -180,21 +170,25 @@ const InstrumentDetailsPage: FC = () => {
                   <div className={styles.meta}>
                     <span className={styles.badge}>{getInstrumentTypeLabel(instrument.type)}</span>
                     {focus && <span className={styles.badge}>{focus.value}</span>}
-                    <span className={styles.badge}>{getExchangeLabel(instrument.exchange ?? quote?.exchange)}</span>
+                    <span className={styles.badge}>{getExchangeLabel(instrument.exchange ?? profile?.exchange)}</span>
                   </div>
                 </div>
                 <div className={styles.heroMetrics}>
-                  {quote && <span className={styles.heroPrice}>{formatPrice(quote)}</span>}
-                  {quote && <span className={heroChangeClassName}>{formatChange(quote)}</span>}
-                  {!quote && <span className={styles.heroPriceFallback}>Kurs saknas</span>}
+                  {profile?.price !== undefined && <span className={styles.heroPrice}>{formatPrice(profile)}</span>}
+                  {profile?.price !== undefined && profile.change !== undefined && (
+                    <span className={heroChangeClassName}>{formatChange(profile)}</span>
+                  )}
+                  {profile?.price === undefined && (
+                    <span className={styles.heroPriceFallback}>Kurs saknas</span>
+                  )}
                   <span className={styles.heroCaption}>
-                    {trendLabel ?? 'Live-prissättning är inte tillgänglig för den här symbolen i din nuvarande API-plan.'}
+                    {trendLabel ?? 'Profilen saknar prisdata just nu.'}
                   </span>
                 </div>
               </div>
             </header>
 
-            {quote && (
+            {profile?.price !== undefined && (
               <section className={styles.chartPanel} aria-labelledby="instrument-performance-heading">
                 <div className={styles.sectionHeader}>
                   <div>
@@ -202,12 +196,12 @@ const InstrumentDetailsPage: FC = () => {
                       Dagens utveckling
                     </h2>
                     <p className={styles.sectionSummary}>
-                      En kompakt vy över den senaste rörelsen baserad på aktuell kurs.
+                      En kompakt vy over den senaste rorelsen baserad pa profilens prisdata.
                     </p>
                   </div>
                   <div className={styles.chartSummary}>
                     <span className={styles.chartSummaryLabel}>Senaste</span>
-                    <span className={styles.chartSummaryValue}>{formatCompactPrice(quote)}</span>
+                    <span className={styles.chartSummaryValue}>{formatCompactPrice(profile)}</span>
                   </div>
                 </div>
                 <div className={styles.chartCanvas}>
@@ -240,25 +234,27 @@ const InstrumentDetailsPage: FC = () => {
             )}
 
             <div className={styles.priceGrid}>
-              {quote && (
+              {profile?.price !== undefined && (
                 <div className={styles.metric}>
                   <span className={styles.metricLabel}>Kurs</span>
-                  <span className={styles.metricValue}>{formatPrice(quote)}</span>
+                  <span className={styles.metricValue}>{formatPrice(profile)}</span>
                 </div>
               )}
-              {quote && (
+              {profile?.change !== undefined && profile.changesPercentage !== undefined && (
                 <div className={styles.metric}>
                   <span className={styles.metricLabel}>Dagens förändring</span>
-                  <span className={changeClassName}>{formatChange(quote)}</span>
+                  <span className={changeClassName}>{formatChange(profile)}</span>
                 </div>
               )}
               <div className={styles.metric}>
                 <span className={styles.metricLabel}>Marknad</span>
-                <span className={styles.metricValue}>{getExchangeLabel(instrument.exchange ?? quote?.exchange)}</span>
+                <span className={styles.metricValue}>{getExchangeLabel(instrument.exchange ?? profile?.exchange)}</span>
               </div>
               <div className={styles.metric}>
                 <span className={styles.metricLabel}>{focus?.label ?? 'Profil'}</span>
-                <span className={styles.metricValueSmall}>{focus?.value ?? 'Saknas'}</span>
+                <span className={styles.metricValueSmall}>
+                  {profile?.industry ?? focus?.value ?? 'Saknas'}
+                </span>
               </div>
             </div>
 
@@ -293,7 +289,70 @@ const InstrumentDetailsPage: FC = () => {
                   </p>
                 </div>
               </div>
-              <p className={styles.aboutCopy}>{narrative}</p>
+              <div className={styles.aboutLayout}>
+                <div className={styles.profileMeta}>
+                  <p className={styles.aboutCopy}>{profile?.description ?? narrative}</p>
+                  {profile && (
+                    <div className={styles.profileGrid}>
+                      {profile.ceo && (
+                        <div className={styles.metric}>
+                          <span className={styles.metricLabel}>VD</span>
+                          <span className={styles.metricValueSmall}>{profile.ceo}</span>
+                        </div>
+                      )}
+                      {profile.sector && (
+                        <div className={styles.metric}>
+                          <span className={styles.metricLabel}>Sektor</span>
+                          <span className={styles.metricValueSmall}>{profile.sector}</span>
+                        </div>
+                      )}
+                      {profile.industry && (
+                        <div className={styles.metric}>
+                          <span className={styles.metricLabel}>Bransch</span>
+                          <span className={styles.metricValueSmall}>{profile.industry}</span>
+                        </div>
+                      )}
+                      {profile.fullTimeEmployees && (
+                        <div className={styles.metric}>
+                          <span className={styles.metricLabel}>Anställda</span>
+                          <span className={styles.metricValueSmall}>{profile.fullTimeEmployees}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                {profile && (
+                  <aside className={styles.companyCard} aria-label="Bolagsprofil">
+                    <div className={styles.companyMark}>
+                      {profile.image && (
+                        <img
+                          className={styles.companyImage}
+                          src={profile.image}
+                          alt={`${profile.name} logotyp`}
+                        />
+                      )}
+                      <div className={styles.companyInfo}>
+                        <h3 className={styles.companyName}>{profile.name}</h3>
+                        <span className={styles.companySubline}>
+                          {profile.city && profile.state
+                            ? `${profile.city}, ${profile.state}`
+                            : profile.country ?? 'Plats saknas'}
+                        </span>
+                      </div>
+                    </div>
+                    {profile.website && (
+                      <a
+                        className={styles.actionLink}
+                        href={profile.website}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Besök webbplats
+                      </a>
+                    )}
+                  </aside>
+                )}
+              </div>
             </section>
           </section>
         )}

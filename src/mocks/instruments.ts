@@ -1,4 +1,4 @@
-import type { Instrument, InstrumentQuote } from '../types/instrument'
+import type { Instrument, InstrumentProfile } from '../types/instrument'
 
 export const mockInstruments: Instrument[] = [
   {
@@ -50,7 +50,7 @@ export const mockInstruments: Instrument[] = [
   },
 ]
 
-export const mockQuotes: InstrumentQuote[] = [
+export const mockProfiles: InstrumentProfile[] = [
   {
     symbol: 'AAPL',
     name: 'Apple Inc.',
@@ -59,6 +59,15 @@ export const mockQuotes: InstrumentQuote[] = [
     changesPercentage: 2.05,
     currency: 'USD',
     exchange: 'NASDAQ',
+    sector: 'Technology',
+    industry: 'Consumer Electronics',
+    description: 'Apple Inc. utvecklar konsumentteknik med fokus pa hardvara, tjanster och ekosystem.',
+    website: 'https://www.apple.com',
+    country: 'US',
+    city: 'Cupertino',
+    state: 'CA',
+    marketCap: 3_900_351_299_800,
+    volume: 36_725_325,
   },
   {
     symbol: 'MSFT',
@@ -68,6 +77,15 @@ export const mockQuotes: InstrumentQuote[] = [
     changesPercentage: 0.71,
     currency: 'USD',
     exchange: 'NASDAQ',
+    sector: 'Technology',
+    industry: 'Software - Infrastructure',
+    description: 'Microsoft Corporation levererar molnplattformar, produktivitetsverktyg och foretagsmjukvara globalt.',
+    website: 'https://www.microsoft.com',
+    country: 'US',
+    city: 'Redmond',
+    state: 'WA',
+    marketCap: 3_120_000_000_000,
+    volume: 18_442_000,
   },
   {
     symbol: 'JPM',
@@ -77,6 +95,15 @@ export const mockQuotes: InstrumentQuote[] = [
     changesPercentage: -0.41,
     currency: 'USD',
     exchange: 'NYSE',
+    sector: 'Financial Services',
+    industry: 'Banks - Diversified',
+    description: 'JPMorgan Chase & Co. ar en global bankkoncern med fokus pa konsumentbank, investment banking och kapitalforvaltning.',
+    website: 'https://www.jpmorganchase.com',
+    country: 'US',
+    city: 'New York',
+    state: 'NY',
+    marketCap: 809_480_399_378,
+    volume: 9_355_147,
   },
   {
     symbol: 'VOO',
@@ -86,6 +113,27 @@ export const mockQuotes: InstrumentQuote[] = [
     changesPercentage: 0.39,
     currency: 'USD',
     exchange: 'NYSE Arca',
+    isEtf: true,
+    description: 'Vanguard S&P 500 ETF ger bred exponering mot stora amerikanska bolag genom ett indexnara upplagg.',
+    website: 'https://investor.vanguard.com',
+    country: 'US',
+    marketCap: 620_000_000_000,
+    volume: 4_120_000,
+  },
+  {
+    symbol: 'VTSAX',
+    name: 'Vanguard Total Stock Market Index Fund Admiral Shares',
+    price: 139.46,
+    change: 0.24,
+    changesPercentage: 0.17,
+    currency: 'USD',
+    exchange: 'NASDAQ',
+    isFund: true,
+    description: 'Vanguard Total Stock Market Index Fund Admiral Shares erbjuder bred amerikansk aktieexponering i fondformat.',
+    website: 'https://investor.vanguard.com',
+    country: 'US',
+    marketCap: 1_500_000_000_000,
+    volume: 0,
   },
   {
     symbol: 'BTCUSD',
@@ -95,6 +143,10 @@ export const mockQuotes: InstrumentQuote[] = [
     changesPercentage: 1.38,
     currency: 'USD',
     exchange: 'CCC',
+    description: 'Bitcoin USD visar den mest handlade prisreferensen for bitcoin mot amerikanska dollar.',
+    website: 'https://bitcoin.org',
+    marketCap: 1_800_000_000_000,
+    volume: 28_400_000_000,
   },
 ]
 
@@ -113,10 +165,10 @@ export const searchMockInstruments = (query: string) => {
   })
 }
 
-export const findMockQuote = (symbol: string) => {
+export const findMockProfile = (symbol: string) => {
   const normalizedSymbol = symbol.trim().toUpperCase()
 
-  return mockQuotes.find((quote) => quote.symbol === normalizedSymbol)
+  return mockProfiles.find((profile) => profile.symbol === normalizedSymbol)
 }
 
 export const findMockInstrument = (symbol: string) => {

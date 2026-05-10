@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  isFmpQuoteResponse,
+  isFmpProfileResponse,
   isFmpSearchInstrumentResponse,
-  parseFmpQuoteResponse,
+  parseFmpProfileResponse,
   parseFmpSearchResponse,
 } from './fmpGuards'
 
@@ -25,20 +25,22 @@ describe('when validating FMP search responses', () => {
   })
 })
 
-describe('when validating FMP quote responses', () => {
-  it('should accept valid quote response items', () => {
+describe('when validating FMP profile responses', () => {
+  it('should accept valid profile response items', () => {
     expect(
-      isFmpQuoteResponse({
+      isFmpProfileResponse({
         symbol: 'AAPL',
-        name: 'Apple Inc.',
-        price: 293.32,
-        change: 5.88,
+        companyName: 'Apple Inc.',
+        exchange: 'NASDAQ',
+        isEtf: false,
       }),
     ).toBe(true)
   })
 
-  it('should reject malformed quote response items', () => {
-    expect(isFmpQuoteResponse({ symbol: 'AAPL', price: '293.32' })).toBe(false)
-    expect(parseFmpQuoteResponse([{ symbol: 'AAPL', name: 'Apple Inc.', price: 293.32 }, []])).toHaveLength(1)
+  it('should reject malformed profile response items', () => {
+    expect(isFmpProfileResponse({ symbol: 'AAPL', companyName: 12 })).toBe(false)
+    expect(
+      parseFmpProfileResponse([{ symbol: 'AAPL', companyName: 'Apple Inc.' }, null]),
+    ).toHaveLength(1)
   })
 })

@@ -8,13 +8,27 @@ export type FmpSearchInstrumentResponse = {
   stockExchange?: string
 }
 
-export type FmpQuoteResponse = {
+export type FmpProfileResponse = {
   symbol?: string
-  name?: string
   price?: number
+  marketCap?: number
+  companyName?: string
+  currency?: string
+  exchangeFullName?: string
+  exchange?: string
+  industry?: string
+  website?: string
+  description?: string
+  ceo?: string
+  sector?: string
+  country?: string
+  fullTimeEmployees?: string
+  city?: string
+  state?: string
+  image?: string
+  isEtf?: boolean
+  isFund?: boolean
+  volume?: number
   change?: number
   changePercentage?: number
-  changesPercentage?: number
-  currency?: string
-  exchange?: string
 }

@@ -2,8 +2,7 @@ import type { FC, MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 
-import { canUseLiveQuoteForInstrument } from '../../api/fmpAvailability'
-import { useGetInstrumentQuoteQuery } from '../../api/instrumentsApi'
+import { useGetInstrumentProfileQuery } from '../../api/instrumentsApi'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import { useWatchlist } from '../../hooks/useWatchlist'
 import type { Instrument } from '../../types/instrument'
@@ -29,16 +28,13 @@ const WatchlistCard: FC<Props> = (props) => {
   const { instrument } = props
   const { addToCompare, canAddToCompare, isInCompare } = useCompareSelection()
   const { removeFromWatchlist } = useWatchlist()
-  const shouldFetchLiveQuote = canUseLiveQuoteForInstrument(instrument)
-  const { data: quote } = useGetInstrumentQuoteQuery(instrument.symbol, {
-    skip: !shouldFetchLiveQuote,
-  })
+  const { data: profile } = useGetInstrumentProfileQuery(instrument.symbol)
   const isSelectedForCompare = isInCompare(instrument.symbol)
   const compareButtonLabel = isSelectedForCompare ? 'Redan i jämförelse' : 'Lägg till i jämförelse'
   const isCompareDisabled = isSelectedForCompare || !canAddToCompare
   const quoteChangeClassName = clsx(
     styles.quoteChange,
-    quote && quote.change >= 0 ? styles.positive : styles.negative,
+    profile && (profile.change ?? 0) >= 0 ? styles.positive : styles.negative,
   )
 
   const handleAddToCompare = (event: MouseEvent<HTMLButtonElement>) => {
@@ -76,11 +72,11 @@ const WatchlistCard: FC<Props> = (props) => {
       <div className={styles.quotePanel}>
         <div>
           <span className={styles.quoteLabel}>Senaste kurs</span>
-          <p className={styles.quoteValue}>{formatWatchlistPrice(quote)}</p>
+          <p className={styles.quoteValue}>{formatWatchlistPrice(profile)}</p>
         </div>
         <div>
           <span className={styles.quoteLabel}>Dagens förändring</span>
-          <p className={quoteChangeClassName}>{formatWatchlistChange(quote)}</p>
+          <p className={quoteChangeClassName}>{formatWatchlistChange(profile)}</p>
         </div>
       </div>
 
@@ -92,7 +88,7 @@ const WatchlistCard: FC<Props> = (props) => {
         <div>
           <span className={styles.detailLabel}>Status</span>
           <span className={styles.detailValue}>
-            {quote ? 'Live eller mockad kurs tillgänglig' : 'Ingen kurs tillgänglig'}
+            {profile?.price !== undefined ? 'Profil med kursdata tillgänglig' : 'Ingen kurs tillgänglig'}
           </span>
         </div>
       </div>

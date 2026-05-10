@@ -1,4 +1,4 @@
-import type { Instrument, InstrumentQuote } from '../../types/instrument'
+import type { Instrument, InstrumentProfile } from '../../types/instrument'
 import {
   isCryptoInstrument,
   isEtfInstrument,
@@ -17,13 +17,16 @@ const hashSymbol = (symbol: string) => {
   return symbol.split('').reduce((total, character) => total + character.charCodeAt(0), 0)
 }
 
-export const getDetailsSeries = (quote: InstrumentQuote): DetailsSeriesPoint[] => {
-  const hash = hashSymbol(quote.symbol)
-  const basePrice = quote.price - quote.change
-  const drift = quote.change / Math.max(seriesLabels.length - 1, 1)
+export const getDetailsSeries = (profile: InstrumentProfile): DetailsSeriesPoint[] => {
+  const hash = hashSymbol(profile.symbol)
+  const currentPrice = profile.price ?? 0
+  const change = profile.change ?? 0
+  const basePrice = currentPrice - change
+  const drift = change / Math.max(seriesLabels.length - 1, 1)
 
   return seriesLabels.map((label, index) => {
-    const wave = Math.sin(index + hash / 15) * Math.max(Math.abs(quote.change) * 0.16, quote.price * 0.0035)
+    const wave =
+      Math.sin(index + hash / 15) * Math.max(Math.abs(change) * 0.16, currentPrice * 0.0035)
     const price = basePrice + drift * index + wave
 
     return {
@@ -77,12 +80,12 @@ export const getInstrumentNarrative = (instrument: Instrument) => {
   return `${instrument.name} behandlas som en digital tillgång med löpande handel och högre kortsiktig volatilitet.`
 }
 
-export const getTrendLabel = (quote: InstrumentQuote) => {
-  if (quote.changesPercentage >= 1) {
+export const getTrendLabel = (profile: InstrumentProfile) => {
+  if ((profile.changesPercentage ?? 0) >= 1) {
     return 'Positiv handelsdag'
   }
 
-  if (quote.changesPercentage <= -1) {
+  if ((profile.changesPercentage ?? 0) <= -1) {
     return 'Negativ handelsdag'
   }
 

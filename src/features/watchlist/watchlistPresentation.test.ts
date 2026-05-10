@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { mockInstruments, mockQuotes } from '../../mocks/instruments'
+import { mockInstruments, mockProfiles } from '../../mocks/instruments'
 import {
   formatWatchlistChange,
   formatWatchlistPrice,
@@ -13,7 +13,7 @@ describe('when formatting watchlist prices', () => {
   })
 
   it('should format known quote values', () => {
-    expect(formatWatchlistPrice(mockQuotes[0])).toContain('293')
+    expect(formatWatchlistPrice(mockProfiles[0])).toContain('293')
   })
 })
 
@@ -23,7 +23,7 @@ describe('when formatting watchlist changes', () => {
   })
 
   it('should include both absolute and percentage change', () => {
-    expect(formatWatchlistChange(mockQuotes[0])).toContain('(')
+    expect(formatWatchlistChange(mockProfiles[0])).toContain('(')
   })
 })
 

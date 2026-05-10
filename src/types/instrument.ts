@@ -28,12 +28,26 @@ export type EtfInstrument = BaseInstrument & {
 
 export type Instrument = StockInstrument | FundInstrument | CryptoInstrument | EtfInstrument
 
-export type InstrumentQuote = {
+export type InstrumentProfile = {
   symbol: string
   name: string
-  price: number
-  change: number
-  changesPercentage: number
   currency?: string
   exchange?: string
+  industry?: string
+  website?: string
+  description?: string
+  ceo?: string
+  sector?: string
+  country?: string
+  fullTimeEmployees?: string
+  city?: string
+  state?: string
+  image?: string
+  isEtf?: boolean
+  isFund?: boolean
+  marketCap?: number
+  volume?: number
+  price?: number
+  change?: number
+  changesPercentage?: number
 }

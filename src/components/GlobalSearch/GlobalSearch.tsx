@@ -21,8 +21,6 @@ import type { SearchHistoryItem } from './globalSearchTypes'
 
 import * as styles from './GlobalSearch.css'
 
-export type Props = {}
-
 const MIN_QUERY_LENGTH = 2
 const RECENT_SEARCHES_STORAGE_KEY = 'investmentCompareRecentSearches'
 const MAX_RECENT_SEARCHES = 5
@@ -50,7 +48,7 @@ const createRecentSearch = (instrument: Instrument): SearchHistoryItem => {
   }
 }
 
-const GlobalSearch: FC<Props> = () => {
+const GlobalSearch: FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -61,7 +59,7 @@ const GlobalSearch: FC<Props> = () => {
   const [recentSearches, setRecentSearches] = useState<SearchHistoryItem[]>(readRecentSearches)
   const debouncedQuery = useDebounce(query.trim(), 250)
   const shouldSearch = debouncedQuery.length >= MIN_QUERY_LENGTH
-  const { data: results = [], isFetching } = useSearchInstrumentsQuery(debouncedQuery, {
+  const { data: results = [], isError, isFetching } = useSearchInstrumentsQuery(debouncedQuery, {
     skip: !shouldSearch,
   })
 
@@ -262,6 +260,7 @@ const GlobalSearch: FC<Props> = () => {
 
   const hasRecentSearches = !shouldSearch && recentItems.length > 0
   const hasNoResults = shouldSearch && !isFetching && visibleResults.length === 0
+  const hasSearchError = shouldSearch && !isFetching && isError
   const shouldShowQueryHint = query.trim().length > 0 && !shouldSearch && !hasRecentSearches
   const shouldShowPanel = isOpen && (query.length > 0 || hasRecentSearches)
 
@@ -310,7 +309,13 @@ const GlobalSearch: FC<Props> = () => {
                 <div className={styles.resultList}>{visibleResults.map(renderSearchResult)}</div>
               )}
 
-              {hasNoResults && <p className={styles.emptyText}>Inga instrument hittades.</p>}
+              {hasSearchError && (
+                <p className={styles.emptyText}>Sökningen kunde inte hämtas just nu.</p>
+              )}
+
+              {!hasSearchError && hasNoResults && (
+                <p className={styles.emptyText}>Inga instrument hittades.</p>
+              )}
             </section>
           )}
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { mockInstruments, mockQuotes } from '../../mocks/instruments'
+import { mockInstruments, mockProfiles } from '../../mocks/instruments'
 import {
   getDetailsSeries,
   getInstrumentFocus,
@@ -10,7 +10,7 @@ import {
 
 describe('when building details chart data', () => {
   it('should create a visible intraday series', () => {
-    const series = getDetailsSeries(mockQuotes[0])
+    const series = getDetailsSeries(mockProfiles[0])
 
     expect(series).toHaveLength(6)
     expect(series[0]?.label).toBe('Öppning')
@@ -45,8 +45,8 @@ describe('when creating instrument narratives', () => {
 
 describe('when summarizing the latest trend', () => {
   it('should distinguish positive negative and sideways sessions', () => {
-    expect(getTrendLabel({ ...mockQuotes[0], changesPercentage: 1.2 })).toBe('Positiv handelsdag')
-    expect(getTrendLabel({ ...mockQuotes[0], changesPercentage: -1.2 })).toBe('Negativ handelsdag')
-    expect(getTrendLabel({ ...mockQuotes[0], changesPercentage: 0.3 })).toBe('Sidledes handelsdag')
+    expect(getTrendLabel({ ...mockProfiles[0], changesPercentage: 1.2 })).toBe('Positiv handelsdag')
+    expect(getTrendLabel({ ...mockProfiles[0], changesPercentage: -1.2 })).toBe('Negativ handelsdag')
+    expect(getTrendLabel({ ...mockProfiles[0], changesPercentage: 0.3 })).toBe('Sidledes handelsdag')
   })
 })

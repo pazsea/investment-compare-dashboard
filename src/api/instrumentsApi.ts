@@ -1,16 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { FMP_API_KEY, FMP_BASE_URL, shouldUseFmpApi } from './config'
-import { parseFmpQuoteResponse, parseFmpSearchResponse } from './fmpGuards'
-import {
-  isInstrument,
-  isInstrumentQuote,
-  mapQuoteToInstrumentQuote,
-  mapSearchResultToInstrument,
-} from './fmpMappers'
+import { parseFmpProfileResponse, parseFmpSearchResponse } from './fmpGuards'
+import { isInstrument, isInstrumentProfile, mapProfileToInstrumentProfile, mapSearchResultToInstrument } from './fmpMappers'
 import { mergeSearchResults } from './fmpUtils'
-import { findMockQuote, searchMockInstruments } from '../mocks/instruments'
-import type { Instrument, InstrumentQuote } from '../types/instrument'
+import { findMockProfile, searchMockInstruments } from '../mocks/instruments'
+import type { Instrument, InstrumentProfile } from '../types/instrument'
 
 const baseQuery = fetchBaseQuery({
   baseUrl: FMP_BASE_URL,
@@ -22,8 +17,7 @@ const withApiKey = (params: Record<string, string>) => ({
 })
 
 const getFallbackSearch = (query: string) => ({ data: searchMockInstruments(query) })
-
-const getFallbackQuote = (symbol: string) => ({ data: findMockQuote(symbol) })
+const getFallbackProfile = (symbol: string) => ({ data: findMockProfile(symbol) })
 
 export const instrumentsApi = createApi({
   reducerPath: 'instrumentsApi',
@@ -42,23 +36,30 @@ export const instrumentsApi = createApi({
         }
 
         const result = await fetchWithBaseQuery({
-          url: '/api/v3/search-ticker',
-          params: withApiKey({ limit: '10', query: normalizedQuery }),
+          url: '/stable/search-symbol',
+          params: withApiKey({ query: normalizedQuery }),
+        })
+        const nameResult = await fetchWithBaseQuery({
+          url: '/stable/search-name',
+          params: withApiKey({ query: normalizedQuery }),
         })
 
-        if (result.error) {
-          return getFallbackSearch(normalizedQuery)
+        if (result.error && nameResult.error) {
+          return {
+            error: result.error,
+          }
         }
 
         const symbolResults = parseFmpSearchResponse(result.data)
-        const rawResults = mergeSearchResults(symbolResults, [])
+        const nameResults = parseFmpSearchResponse(nameResult.data)
+        const rawResults = mergeSearchResults(symbolResults, nameResults)
 
         return {
           data: rawResults.map(mapSearchResultToInstrument).filter(isInstrument),
         }
       },
     }),
-    getInstrumentQuote: builder.query<InstrumentQuote | undefined, string>({
+    getInstrumentProfile: builder.query<InstrumentProfile | undefined, string>({
       async queryFn(symbol, _api, _extraOptions, fetchWithBaseQuery) {
         const normalizedSymbol = symbol.trim().toUpperCase()
 
@@ -67,26 +68,28 @@ export const instrumentsApi = createApi({
         }
 
         if (!shouldUseFmpApi) {
-          return getFallbackQuote(normalizedSymbol)
+          return getFallbackProfile(normalizedSymbol)
         }
 
         const result = await fetchWithBaseQuery({
-          url: '/stable/quote',
+          url: '/stable/profile',
           params: withApiKey({ symbol: normalizedSymbol }),
         })
 
         if (result.error) {
-          return getFallbackQuote(normalizedSymbol)
+          return {
+            error: result.error,
+          }
         }
 
-        const rawQuotes = parseFmpQuoteResponse(result.data)
+        const rawProfiles = parseFmpProfileResponse(result.data)
 
         return {
-          data: rawQuotes.map(mapQuoteToInstrumentQuote).find(isInstrumentQuote),
+          data: rawProfiles.map(mapProfileToInstrumentProfile).find(isInstrumentProfile),
         }
       },
     }),
   }),
 })
 
-export const { useSearchInstrumentsQuery, useGetInstrumentQuoteQuery } = instrumentsApi
+export const { useSearchInstrumentsQuery, useGetInstrumentProfileQuery } = instrumentsApi

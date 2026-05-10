@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest'
 import {
   inferInstrumentType,
   isInstrument,
-  isInstrumentQuote,
-  mapQuoteToInstrumentQuote,
+  isInstrumentProfile,
+  mapProfileToInstrumentProfile,
   mapSearchResultToInstrument,
 } from './fmpMappers'
 
@@ -40,27 +40,41 @@ describe('when mapping FMP search results', () => {
   })
 })
 
-describe('when mapping FMP quote results', () => {
-  it('should create domain quotes when required fields exist', () => {
+describe('when mapping FMP profile results', () => {
+  it('should create domain profiles when required fields exist', () => {
     expect(
-      mapQuoteToInstrumentQuote({
+      mapProfileToInstrumentProfile({
         symbol: 'AAPL',
-        name: 'Apple Inc.',
-        price: 293.32,
-        changePercentage: 2.05,
+        companyName: 'Apple Inc.',
+        exchange: 'NASDAQ',
+        sector: 'Technology',
       }),
     ).toEqual({
       symbol: 'AAPL',
       name: 'Apple Inc.',
-      price: 293.32,
-      change: 0,
-      changesPercentage: 2.05,
       currency: undefined,
-      exchange: undefined,
+      exchange: 'NASDAQ',
+      industry: undefined,
+      website: undefined,
+      description: undefined,
+      ceo: undefined,
+      sector: 'Technology',
+      country: undefined,
+      fullTimeEmployees: undefined,
+      city: undefined,
+      state: undefined,
+      image: undefined,
+      isEtf: undefined,
+      isFund: undefined,
+      marketCap: undefined,
+      volume: undefined,
+      price: undefined,
+      change: undefined,
+      changesPercentage: undefined,
     })
   })
 
-  it('should skip incomplete quotes', () => {
-    expect(isInstrumentQuote(mapQuoteToInstrumentQuote({ symbol: 'AAPL', name: 'Apple Inc.' }))).toBe(false)
+  it('should skip incomplete profile payloads', () => {
+    expect(isInstrumentProfile(mapProfileToInstrumentProfile({ symbol: 'AAPL' }))).toBe(false)
   })
 })

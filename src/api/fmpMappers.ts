@@ -1,5 +1,5 @@
-import type { Instrument, InstrumentQuote } from '../types/instrument'
-import type { FmpQuoteResponse, FmpSearchInstrumentResponse } from './fmpTypes'
+import type { Instrument, InstrumentProfile } from '../types/instrument'
+import type { FmpProfileResponse, FmpSearchInstrumentResponse } from './fmpTypes'
 
 export const inferInstrumentType = (symbol: string, name: string): Instrument['type'] => {
   const normalizedSymbol = symbol.toUpperCase()
@@ -39,21 +39,35 @@ export const mapSearchResultToInstrument = (
   }
 }
 
-export const mapQuoteToInstrumentQuote = (
-  quote: FmpQuoteResponse,
-): InstrumentQuote | undefined => {
-  if (!quote.symbol || !quote.name || quote.price === undefined) {
+export const mapProfileToInstrumentProfile = (
+  profile: FmpProfileResponse,
+): InstrumentProfile | undefined => {
+  if (!profile.symbol || !profile.companyName) {
     return undefined
   }
 
   return {
-    symbol: quote.symbol,
-    name: quote.name,
-    price: quote.price,
-    change: quote.change ?? 0,
-    changesPercentage: quote.changesPercentage ?? quote.changePercentage ?? 0,
-    currency: quote.currency,
-    exchange: quote.exchange,
+    symbol: profile.symbol,
+    name: profile.companyName,
+    currency: profile.currency,
+    exchange: profile.exchange ?? profile.exchangeFullName,
+    industry: profile.industry,
+    website: profile.website,
+    description: profile.description,
+    ceo: profile.ceo,
+    sector: profile.sector,
+    country: profile.country,
+    fullTimeEmployees: profile.fullTimeEmployees,
+    city: profile.city,
+    state: profile.state,
+    image: profile.image,
+    isEtf: profile.isEtf,
+    isFund: profile.isFund,
+    marketCap: profile.marketCap,
+    volume: profile.volume,
+    price: profile.price,
+    change: profile.change,
+    changesPercentage: profile.changePercentage,
   }
 }
 
@@ -61,8 +75,8 @@ export const isInstrument = (instrument: Instrument | undefined): instrument is 
   return Boolean(instrument)
 }
 
-export const isInstrumentQuote = (
-  quote: InstrumentQuote | undefined,
-): quote is InstrumentQuote => {
-  return Boolean(quote)
+export const isInstrumentProfile = (
+  profile: InstrumentProfile | undefined,
+): profile is InstrumentProfile => {
+  return Boolean(profile)
 }

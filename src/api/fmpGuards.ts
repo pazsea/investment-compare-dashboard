@@ -1,4 +1,4 @@
-import type { FmpQuoteResponse, FmpSearchInstrumentResponse } from './fmpTypes'
+import type { FmpProfileResponse, FmpSearchInstrumentResponse } from './fmpTypes'
 import { isRecord } from '../utils/sharedTypeguards'
 
 const isOptionalString = (value: unknown) => {
@@ -7,6 +7,10 @@ const isOptionalString = (value: unknown) => {
 
 const isOptionalNumber = (value: unknown) => {
   return value === undefined || typeof value === 'number'
+}
+
+const isOptionalBoolean = (value: unknown) => {
+  return value === undefined || typeof value === 'boolean'
 }
 
 export const isFmpSearchInstrumentResponse = (
@@ -27,20 +31,34 @@ export const isFmpSearchInstrumentResponse = (
   )
 }
 
-export const isFmpQuoteResponse = (value: unknown): value is FmpQuoteResponse => {
+export const isFmpProfileResponse = (value: unknown): value is FmpProfileResponse => {
   if (!isRecord(value)) {
     return false
   }
 
   return (
     isOptionalString(value.symbol) &&
-    isOptionalString(value.name) &&
     isOptionalNumber(value.price) &&
-    isOptionalNumber(value.change) &&
-    isOptionalNumber(value.changePercentage) &&
-    isOptionalNumber(value.changesPercentage) &&
+    isOptionalNumber(value.marketCap) &&
+    isOptionalString(value.companyName) &&
     isOptionalString(value.currency) &&
-    isOptionalString(value.exchange)
+    isOptionalString(value.exchangeFullName) &&
+    isOptionalString(value.exchange) &&
+    isOptionalString(value.industry) &&
+    isOptionalString(value.website) &&
+    isOptionalString(value.description) &&
+    isOptionalString(value.ceo) &&
+    isOptionalString(value.sector) &&
+    isOptionalString(value.country) &&
+    isOptionalString(value.fullTimeEmployees) &&
+    isOptionalString(value.city) &&
+    isOptionalString(value.state) &&
+    isOptionalString(value.image) &&
+    isOptionalBoolean(value.isEtf) &&
+    isOptionalBoolean(value.isFund) &&
+    isOptionalNumber(value.volume) &&
+    isOptionalNumber(value.change) &&
+    isOptionalNumber(value.changePercentage)
   )
 }
 
@@ -48,6 +66,6 @@ export const parseFmpSearchResponse = (value: unknown): FmpSearchInstrumentRespo
   return Array.isArray(value) ? value.filter(isFmpSearchInstrumentResponse) : []
 }
 
-export const parseFmpQuoteResponse = (value: unknown): FmpQuoteResponse[] => {
-  return Array.isArray(value) ? value.filter(isFmpQuoteResponse) : []
+export const parseFmpProfileResponse = (value: unknown): FmpProfileResponse[] => {
+  return Array.isArray(value) ? value.filter(isFmpProfileResponse) : []
 }

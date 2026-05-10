@@ -263,6 +263,16 @@ export const selectedButton = style({
   color: vars.colors.primary,
 })
 
+export const actionLink = style([
+  button,
+  {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textDecoration: 'none',
+  },
+])
+
 export const aboutPanel = style({
   display: 'grid',
   gap: vars.space.md,
@@ -272,11 +282,80 @@ export const aboutPanel = style({
   background: vars.colors.surfaceElevated,
 })
 
+export const aboutLayout = style({
+  display: 'grid',
+  gap: vars.space.lg,
+
+  '@media': {
+    [`(min-width: ${breakpoints.tablet})`]: {
+      gridTemplateColumns: 'minmax(0, 1fr) 220px',
+      alignItems: 'start',
+    },
+  },
+})
+
 export const aboutCopy = style({
   margin: 0,
   color: vars.colors.textMuted,
   fontSize: vars.fontSize.md,
   lineHeight: 1.7,
+})
+
+export const profileMeta = style({
+  display: 'grid',
+  gap: vars.space.md,
+})
+
+export const companyCard = style({
+  display: 'grid',
+  gap: vars.space.md,
+  padding: vars.space.lg,
+  border: `1px solid ${vars.colors.border}`,
+  borderRadius: vars.radii.md,
+  background: vars.colors.surface,
+})
+
+export const companyMark = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: vars.space.md,
+})
+
+export const companyImage = style({
+  width: '48px',
+  height: '48px',
+  borderRadius: vars.radii.sm,
+  objectFit: 'contain',
+  background: vars.colors.surfaceElevated,
+  padding: vars.space.xs,
+})
+
+export const companyInfo = style({
+  display: 'grid',
+  gap: vars.space.xs,
+})
+
+export const companyName = style({
+  margin: 0,
+  color: vars.colors.text,
+  fontSize: vars.fontSize.md,
+  fontWeight: 700,
+})
+
+export const companySubline = style({
+  color: vars.colors.textMuted,
+  fontSize: vars.fontSize.sm,
+})
+
+export const profileGrid = style({
+  display: 'grid',
+  gap: vars.space.md,
+
+  '@media': {
+    [`(min-width: ${breakpoints.mobile})`]: {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+  },
 })
 
 export const status = style({
