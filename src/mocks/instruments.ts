@@ -1,4 +1,4 @@
-import type { Instrument, InstrumentProfile } from '../types/instrument'
+import type { Instrument, InstrumentMarketCapPoint, InstrumentProfile } from '../types/instrument'
 
 export const mockInstruments: Instrument[] = [
   {
@@ -66,6 +66,7 @@ export const mockProfiles: InstrumentProfile[] = [
     country: 'US',
     city: 'Cupertino',
     state: 'CA',
+    defaultImage: false,
     marketCap: 3_900_351_299_800,
     volume: 36_725_325,
   },
@@ -84,6 +85,7 @@ export const mockProfiles: InstrumentProfile[] = [
     country: 'US',
     city: 'Redmond',
     state: 'WA',
+    defaultImage: false,
     marketCap: 3_120_000_000_000,
     volume: 18_442_000,
   },
@@ -102,6 +104,7 @@ export const mockProfiles: InstrumentProfile[] = [
     country: 'US',
     city: 'New York',
     state: 'NY',
+    defaultImage: false,
     marketCap: 809_480_399_378,
     volume: 9_355_147,
   },
@@ -117,6 +120,7 @@ export const mockProfiles: InstrumentProfile[] = [
     description: 'Vanguard S&P 500 ETF ger bred exponering mot stora amerikanska bolag genom ett indexnara upplagg.',
     website: 'https://investor.vanguard.com',
     country: 'US',
+    defaultImage: false,
     marketCap: 620_000_000_000,
     volume: 4_120_000,
   },
@@ -132,6 +136,7 @@ export const mockProfiles: InstrumentProfile[] = [
     description: 'Vanguard Total Stock Market Index Fund Admiral Shares erbjuder bred amerikansk aktieexponering i fondformat.',
     website: 'https://investor.vanguard.com',
     country: 'US',
+    defaultImage: false,
     marketCap: 1_500_000_000_000,
     volume: 0,
   },
@@ -145,10 +150,39 @@ export const mockProfiles: InstrumentProfile[] = [
     exchange: 'CCC',
     description: 'Bitcoin USD visar den mest handlade prisreferensen for bitcoin mot amerikanska dollar.',
     website: 'https://bitcoin.org',
+    defaultImage: false,
     marketCap: 1_800_000_000_000,
     volume: 28_400_000_000,
   },
 ]
+
+const MOCK_HISTORY_DAY_COUNT = 6
+const MOCK_HISTORY_DAY_STEP = 5
+const MOCK_HISTORY_SWING = 0.035
+
+const buildMockMarketCapHistory = (profile: InstrumentProfile): InstrumentMarketCapPoint[] => {
+  const currentMarketCap = profile.marketCap ?? 1_000_000_000
+  const symbolHash = profile.symbol.split('').reduce((total, character) => total + character.charCodeAt(0), 0)
+
+  return Array.from({ length: MOCK_HISTORY_DAY_COUNT }, (_value, index) => {
+    const dayOffset = (MOCK_HISTORY_DAY_COUNT - index - 1) * MOCK_HISTORY_DAY_STEP
+    const date = new Date('2026-05-10T00:00:00.000Z')
+    date.setUTCDate(date.getUTCDate() - dayOffset)
+
+    const wave = Math.sin(index + symbolHash / 20) * currentMarketCap * MOCK_HISTORY_SWING
+    const marketCap = Math.round(currentMarketCap - wave)
+
+    return {
+      symbol: profile.symbol,
+      date: date.toISOString().slice(0, 10),
+      marketCap,
+    }
+  })
+}
+
+export const mockMarketCapHistory = Object.fromEntries(
+  mockProfiles.map((profile) => [profile.symbol, buildMockMarketCapHistory(profile)]),
+) satisfies Record<string, InstrumentMarketCapPoint[]>
 
 export const searchMockInstruments = (query: string) => {
   const normalizedQuery = query.trim().toLowerCase()
@@ -169,6 +203,12 @@ export const findMockProfile = (symbol: string) => {
   const normalizedSymbol = symbol.trim().toUpperCase()
 
   return mockProfiles.find((profile) => profile.symbol === normalizedSymbol)
+}
+
+export const findMockMarketCapHistory = (symbol: string) => {
+  const normalizedSymbol = symbol.trim().toUpperCase()
+
+  return mockMarketCapHistory[normalizedSymbol] ?? []
 }
 
 export const findMockInstrument = (symbol: string) => {

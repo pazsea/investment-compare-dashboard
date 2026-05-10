@@ -125,6 +125,7 @@ export const chartSection = style({
 export const chartHeader = style({
   display: 'grid',
   gap: vars.space.md,
+  minWidth: 0,
 
   '@media': {
     [`(min-width: ${breakpoints.tablet})`]: {
@@ -147,42 +148,32 @@ export const chartSummary = style({
   lineHeight: 1.5,
 })
 
-export const rangeControls = style({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
-  gap: vars.space.xs,
-})
-
-export const rangeButton = style({
-  minHeight: '40px',
-  border: `1px solid ${vars.colors.border}`,
-  borderRadius: vars.radii.sm,
-  background: vars.colors.surfaceElevated,
-  color: vars.colors.textMuted,
-  cursor: 'pointer',
+export const chartPill = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: '32px',
+  minWidth: '52px',
+  width: 'fit-content',
+  borderColor: vars.colors.primary,
+  borderStyle: 'solid',
+  borderWidth: '1px',
+  borderRadius: vars.radii.full,
+  background: vars.colors.primarySoft,
+  color: vars.colors.primary,
   fontSize: vars.fontSize.xs,
   fontWeight: 700,
   padding: `${vars.space.xs} ${vars.space.sm}`,
-  transition: 'transform 180ms ease, border-color 180ms ease, background-color 180ms ease, color 180ms ease',
-
-  ':hover': {
-    transform: 'translateY(-1px)',
-    borderColor: vars.colors.borderStrong,
-  },
-})
-
-export const activeRangeButton = style({
-  borderColor: vars.colors.primary,
-  background: vars.colors.primarySoft,
-  color: vars.colors.primary,
 })
 
 export const chartViewport = style({
+  minWidth: 0,
   overflow: 'hidden',
 })
 
 export const chartCanvas = style({
   minWidth: 0,
+  minHeight: '280px',
   width: '100%',
   height: '280px',
 })
@@ -199,69 +190,6 @@ export const metricsGrid = style({
       gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
     },
   },
-})
-
-export const scenarioSection = style({
-  display: 'grid',
-  gap: vars.space.lg,
-  padding: vars.space.lg,
-  border: `1px solid ${vars.colors.border}`,
-  borderRadius: vars.radii.md,
-  background: vars.colors.surface,
-  boxShadow: vars.shadow.sm,
-})
-
-export const amountField = style({
-  display: 'grid',
-  gap: vars.space.xs,
-})
-
-export const amountLabel = style({
-  color: vars.colors.textSubtle,
-  fontSize: vars.fontSize.xs,
-  fontWeight: 700,
-  textTransform: 'uppercase',
-})
-
-export const amountInput = style({
-  minHeight: '44px',
-  minWidth: '140px',
-  border: `1px solid ${vars.colors.border}`,
-  borderRadius: vars.radii.sm,
-  background: vars.colors.surfaceElevated,
-  color: vars.colors.text,
-  fontFamily: vars.font.mono,
-  fontSize: vars.fontSize.sm,
-  fontWeight: 700,
-  padding: `${vars.space.sm} ${vars.space.md}`,
-})
-
-export const scenarioCards = style({
-  display: 'grid',
-  gap: vars.space.lg,
-
-  '@media': {
-    [`(min-width: ${breakpoints.tablet})`]: {
-      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-    },
-    [`(min-width: ${breakpoints.desktop})`]: {
-      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-    },
-  },
-})
-
-export const scenarioCard = style({
-  display: 'grid',
-  gap: vars.space.md,
-  padding: vars.space.lg,
-  border: `1px solid ${vars.colors.border}`,
-  borderRadius: vars.radii.md,
-  background: vars.colors.surfaceElevated,
-})
-
-export const scenarioGrid = style({
-  display: 'grid',
-  gap: vars.space.md,
 })
 
 export const metricCard = style({

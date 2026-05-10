@@ -43,6 +43,7 @@ export type InstrumentProfile = {
   city?: string
   state?: string
   image?: string
+  defaultImage?: boolean
   isEtf?: boolean
   isFund?: boolean
   marketCap?: number
@@ -50,4 +51,10 @@ export type InstrumentProfile = {
   price?: number
   change?: number
   changesPercentage?: number
+}
+
+export type InstrumentMarketCapPoint = {
+  symbol: string
+  date: string
+  marketCap: number
 }

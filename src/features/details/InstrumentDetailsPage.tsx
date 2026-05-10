@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { FC } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import clsx from 'clsx'
@@ -93,6 +93,7 @@ const InstrumentDetailsPage: FC = () => {
   })
   const profileInstrument = profile ? createInstrumentFromProfile(profile) : undefined
   const instrument = routeInstrument ?? profileInstrument
+  const [isCompanyImageVisible, setIsCompanyImageVisible] = useState(Boolean(profile?.image) && !profile?.defaultImage)
   const { addToCompare, canAddToCompare, isInCompare, removeFromCompare } = useCompareSelection()
   const { addToWatchlist, isInWatchlist, removeFromWatchlist } = useWatchlist()
   const isSelectedForCompare = instrument ? isInCompare(instrument.symbol) : false
@@ -116,6 +117,10 @@ const InstrumentDetailsPage: FC = () => {
   const series = profile?.price !== undefined ? getDetailsSeries(profile) : []
   const trendLabel = profile ? getTrendLabel(profile) : undefined
   const showErrorState = isError && !instrument
+
+  useEffect(() => {
+    setIsCompanyImageVisible(Boolean(profile?.image) && !profile?.defaultImage)
+  }, [profile?.defaultImage, profile?.image])
 
   const handleCompareAction = useCallback(() => {
     if (!instrument) {
@@ -142,6 +147,10 @@ const InstrumentDetailsPage: FC = () => {
 
     addToWatchlist(instrument)
   }, [addToWatchlist, instrument, isSavedToWatchlist, removeFromWatchlist])
+
+  const handleCompanyImageError = useCallback(() => {
+    setIsCompanyImageVisible(false)
+  }, [])
 
   return (
     <main className={styles.page}>
@@ -207,7 +216,7 @@ const InstrumentDetailsPage: FC = () => {
                   </div>
                 </div>
                 <div className={styles.chartCanvas}>
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height={220} minWidth={0} minHeight={220}>
                     <AreaChart data={series} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="details-chart-fill" x1="0" y1="0" x2="0" y2="1">
@@ -326,11 +335,12 @@ const InstrumentDetailsPage: FC = () => {
                 {profile && (
                   <aside className={styles.companyCard} aria-label="Bolagsprofil">
                     <div className={styles.companyMark}>
-                      {profile.image && (
+                      {profile.image && isCompanyImageVisible && (
                         <img
                           className={styles.companyImage}
                           src={profile.image}
                           alt={`${profile.name} logotyp`}
+                          onError={handleCompanyImageError}
                         />
                       )}
                       <div className={styles.companyInfo}>

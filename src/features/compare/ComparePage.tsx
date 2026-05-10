@@ -3,10 +3,11 @@ import type { FC } from 'react'
 import CompareChartSection from './CompareChartSection'
 import CompareMetricsSection from './CompareMetricsSection'
 import CompareMobileList from './CompareMobileList'
-import CompareScenarioSection from './CompareScenarioSection'
 import CompareToolbar from './CompareToolbar'
 import { DataTable } from '../../components/DataTable'
 import { EmptyState } from '../../components/EmptyState'
+import { ErrorState } from '../../components/ErrorState'
+import { LoadingState } from '../../components/LoadingState'
 import { PageHeader } from '../../components/PageHeader'
 import { useComparePage } from './useComparePage'
 import { getCompareRowKey } from './compareTable'
@@ -17,17 +18,13 @@ const ComparePage: FC = () => {
   const {
     chartData,
     columns,
-    handleAmountChange,
     handleClearCompare,
-    handleRangeChange,
     handleRemoveFromCompare,
-    investmentAmount,
+    isError,
+    isLoading,
     metrics,
-    range,
-    scenarios,
     selectedCount,
     selectedInstruments,
-    startingAmount,
   } = useComparePage()
 
   return (
@@ -47,27 +44,29 @@ const ComparePage: FC = () => {
           <section aria-labelledby="compare-results-heading">
             <div className={styles.compareContent}>
               <CompareToolbar onClearCompare={handleClearCompare} selectedCount={selectedCount} />
-              <CompareChartSection
-                chartData={chartData}
-                onRangeChange={handleRangeChange}
-                range={range}
-                selectedInstruments={selectedInstruments}
-              />
-              <CompareMetricsSection metrics={metrics} />
-              <CompareScenarioSection
-                investmentAmount={investmentAmount}
-                onAmountChange={handleAmountChange}
-                scenarios={scenarios}
-                startingAmount={startingAmount}
-              />
-              <CompareMobileList
-                metrics={metrics}
-                onRemoveFromCompare={handleRemoveFromCompare}
-                selectedInstruments={selectedInstruments}
-              />
-              <div className={styles.desktopTable}>
-                <DataTable columns={columns} getRowKey={getCompareRowKey} rows={selectedInstruments} />
-              </div>
+              {isLoading && (
+                <LoadingState
+                  title="Laddar jämförelsedata"
+                  message="Senaste månadsserier och nyckeltal hämtas för valda instrument."
+                />
+              )}
+              {!isLoading && isError && (
+                <ErrorState message="Jämförelsedata kunde inte hämtas just nu." />
+              )}
+              {!isLoading && !isError && (
+                <>
+                  <CompareChartSection chartData={chartData} selectedInstruments={selectedInstruments} />
+                  <CompareMetricsSection metrics={metrics} />
+                  <CompareMobileList
+                    metrics={metrics}
+                    onRemoveFromCompare={handleRemoveFromCompare}
+                    selectedInstruments={selectedInstruments}
+                  />
+                  <div className={styles.desktopTable}>
+                    <DataTable columns={columns} getRowKey={getCompareRowKey} rows={metrics} />
+                  </div>
+                </>
+              )}
             </div>
           </section>
         )}

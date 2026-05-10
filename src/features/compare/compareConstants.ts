@@ -1,10 +1,3 @@
-import type { CompareRange } from './comparePerformance'
-
-export const DEFAULT_COMPARE_RANGE: CompareRange = '1M'
-export const DEFAULT_INVESTMENT_AMOUNT = '10000'
-
-export const compareRangeOptions: CompareRange[] = ['1D', '1W', '1M', '1Y', '5Y']
-
 export const compareChartColors = [
   'var(--compare-line-1, #2563EB)',
   'var(--compare-line-2, #059669)',

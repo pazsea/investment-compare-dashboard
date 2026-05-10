@@ -1,7 +1,12 @@
 import type { MouseEvent } from 'react'
 
 import type { Column } from '../../components/DataTable'
-import type { Instrument } from '../../types/instrument'
+import {
+  formatCompactCurrencyValue,
+  formatCurrencyValue,
+  formatPercentChange,
+} from './compareFormatters'
+import type { CompareMetricEntry } from './compareTypes'
 import {
   getCurrencyLabel,
   getExchangeLabel,
@@ -12,40 +17,56 @@ import * as styles from './ComparePage.css'
 
 export type RemoveFromCompareHandler = (event: MouseEvent<HTMLButtonElement>) => void
 
-export const getCompareRowKey = (instrument: Instrument) => {
-  return instrument.symbol
+export const getCompareRowKey = (entry: CompareMetricEntry) => {
+  return entry.instrument.symbol
 }
 
-const renderNameCell = (instrument: Instrument) => {
-  return instrument.name
+const renderNameCell = (entry: CompareMetricEntry) => {
+  return entry.instrument.name
 }
 
-const renderSymbolCell = (instrument: Instrument) => {
-  return instrument.symbol
+const renderSymbolCell = (entry: CompareMetricEntry) => {
+  return entry.instrument.symbol
 }
 
-const renderTypeCell = (instrument: Instrument) => {
-  return getInstrumentTypeLabel(instrument.type)
+const renderTypeCell = (entry: CompareMetricEntry) => {
+  return getInstrumentTypeLabel(entry.instrument.type)
 }
 
-const renderCurrencyCell = (instrument: Instrument) => {
-  return getCurrencyLabel(instrument.currency)
+const renderCurrencyCell = (entry: CompareMetricEntry) => {
+  return getCurrencyLabel(entry.profile?.currency ?? entry.instrument.currency)
 }
 
-const renderExchangeCell = (instrument: Instrument) => {
-  return getExchangeLabel(instrument.exchange)
+const renderExchangeCell = (entry: CompareMetricEntry) => {
+  return getExchangeLabel(entry.profile?.exchange ?? entry.instrument.exchange)
+}
+
+const renderPriceCell = (entry: CompareMetricEntry) => {
+  return entry.profile?.price !== undefined
+    ? formatCurrencyValue(entry.profile.price, entry.profile.currency)
+    : 'Saknas'
+}
+
+const renderMonthlyChangeCell = (entry: CompareMetricEntry) => {
+  return formatPercentChange(entry.monthlyChangePercentage)
+}
+
+const renderMarketCapCell = (entry: CompareMetricEntry) => {
+  return entry.profile?.marketCap !== undefined
+    ? formatCompactCurrencyValue(entry.profile.marketCap, entry.profile.currency)
+    : 'Saknas'
 }
 
 export const createCompareColumns = (
   handleRemoveFromCompare: RemoveFromCompareHandler,
-): Column<Instrument>[] => {
-  const renderActionCell = (instrument: Instrument) => {
+): Column<CompareMetricEntry>[] => {
+  const renderActionCell = (entry: CompareMetricEntry) => {
     return (
       <button
         className={styles.removeButton}
         type="button"
-        data-symbol={instrument.symbol}
-        aria-label={`Ta bort ${instrument.symbol} från jämförelse`}
+        data-symbol={entry.instrument.symbol}
+        aria-label={`Ta bort ${entry.instrument.symbol} från jämförelse`}
         onClick={handleRemoveFromCompare}
       >
         Ta bort
@@ -57,6 +78,9 @@ export const createCompareColumns = (
     { id: 'name', header: 'Namn', renderCell: renderNameCell },
     { id: 'symbol', header: 'Kortnamn', renderCell: renderSymbolCell },
     { id: 'type', header: 'Typ', renderCell: renderTypeCell },
+    { id: 'price', header: 'Pris', renderCell: renderPriceCell },
+    { id: 'monthlyChange', header: '1 mån', renderCell: renderMonthlyChangeCell },
+    { id: 'marketCap', header: 'Börsvärde', renderCell: renderMarketCapCell },
     { id: 'currency', header: 'Valuta', renderCell: renderCurrencyCell },
     { id: 'exchange', header: 'Marknad', renderCell: renderExchangeCell },
     { id: 'actions', header: 'Åtgärder', renderCell: renderActionCell },

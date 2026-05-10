@@ -1,4 +1,8 @@
-import type { FmpProfileResponse, FmpSearchInstrumentResponse } from './fmpTypes'
+import type {
+  FmpHistoricalMarketCapResponse,
+  FmpProfileResponse,
+  FmpSearchInstrumentResponse,
+} from './fmpTypes'
 import { isRecord } from '../utils/sharedTypeguards'
 
 const isOptionalString = (value: unknown) => {
@@ -66,11 +70,26 @@ export const isFmpProfileResponse = (value: unknown): value is FmpProfileRespons
     isNullableOptionalString(value.city) &&
     isNullableOptionalString(value.state) &&
     isNullableOptionalString(value.image) &&
+    isNullableOptionalBoolean(value.defaultImage) &&
     isNullableOptionalBoolean(value.isEtf) &&
     isNullableOptionalBoolean(value.isFund) &&
     isNullableOptionalNumber(value.volume) &&
     isNullableOptionalNumber(value.change) &&
     isNullableOptionalNumber(value.changePercentage)
+  )
+}
+
+export const isFmpHistoricalMarketCapResponse = (
+  value: unknown,
+): value is FmpHistoricalMarketCapResponse => {
+  if (!isRecord(value)) {
+    return false
+  }
+
+  return (
+    isNullableOptionalString(value.symbol) &&
+    isNullableOptionalString(value.date) &&
+    isNullableOptionalNumber(value.marketCap)
   )
 }
 
@@ -80,4 +99,10 @@ export const parseFmpSearchResponse = (value: unknown): FmpSearchInstrumentRespo
 
 export const parseFmpProfileResponse = (value: unknown): FmpProfileResponse[] => {
   return Array.isArray(value) ? value.filter(isFmpProfileResponse) : []
+}
+
+export const parseFmpHistoricalMarketCapResponse = (
+  value: unknown,
+): FmpHistoricalMarketCapResponse[] => {
+  return Array.isArray(value) ? value.filter(isFmpHistoricalMarketCapResponse) : []
 }

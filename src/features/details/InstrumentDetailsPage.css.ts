@@ -169,6 +169,8 @@ export const chartSummaryValue = style({
 })
 
 export const chartCanvas = style({
+  minWidth: 0,
+  minHeight: '220px',
   width: '100%',
   height: '220px',
 })

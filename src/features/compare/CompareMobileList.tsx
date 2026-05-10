@@ -2,6 +2,7 @@ import type { FC } from 'react'
 import clsx from 'clsx'
 
 import type { Props } from './CompareMobileList.types'
+import { formatCurrencyValue, formatPercentChange } from './compareFormatters'
 import {
   getCurrencyLabel,
   getExchangeLabel,
@@ -14,9 +15,9 @@ const CompareMobileList: FC<Props> = (props) => {
   const { metrics, onRemoveFromCompare, selectedInstruments } = props
 
   const renderMobileCard = (instrument: Props['selectedInstruments'][number]) => {
-    const metric = metrics.find((entry) => entry.instrument.symbol === instrument.symbol)?.values
+    const metric = metrics.find((entry) => entry.instrument.symbol === instrument.symbol)
     const returnClassName =
-      metric && metric.returnPercent >= 0 ? styles.positiveStat : styles.negativeStat
+      metric && (metric.monthlyChangePercentage ?? 0) >= 0 ? styles.positiveStat : styles.negativeStat
 
     return (
       <article className={styles.card} key={instrument.symbol} aria-labelledby={`${instrument.symbol}-compare-name`}>
@@ -51,9 +52,17 @@ const CompareMobileList: FC<Props> = (props) => {
             <dd className={styles.detailValue}>{getExchangeLabel(instrument.exchange)}</dd>
           </div>
           <div>
-            <dt className={styles.detailLabel}>Avkastning</dt>
+            <dt className={styles.detailLabel}>1 mån</dt>
             <dd className={clsx(styles.detailValue, returnClassName)}>
-              {metric ? `${metric.returnPercent}%` : 'Saknas'}
+              {metric ? formatPercentChange(metric.monthlyChangePercentage) : 'Saknas'}
+            </dd>
+          </div>
+          <div>
+            <dt className={styles.detailLabel}>Pris</dt>
+            <dd className={styles.detailValue}>
+              {metric?.profile?.price !== undefined
+                ? formatCurrencyValue(metric.profile.price, metric.profile.currency)
+                : 'Saknas'}
             </dd>
           </div>
         </dl>

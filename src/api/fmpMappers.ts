@@ -1,5 +1,9 @@
-import type { Instrument, InstrumentProfile } from '../types/instrument'
-import type { FmpProfileResponse, FmpSearchInstrumentResponse } from './fmpTypes'
+import type { Instrument, InstrumentMarketCapPoint, InstrumentProfile } from '../types/instrument'
+import type {
+  FmpHistoricalMarketCapResponse,
+  FmpProfileResponse,
+  FmpSearchInstrumentResponse,
+} from './fmpTypes'
 
 export const inferInstrumentType = (symbol: string, name: string): Instrument['type'] => {
   const normalizedSymbol = symbol.toUpperCase()
@@ -61,6 +65,7 @@ export const mapProfileToInstrumentProfile = (
     city: profile.city ?? undefined,
     state: profile.state ?? undefined,
     image: profile.image ?? undefined,
+    defaultImage: profile.defaultImage ?? undefined,
     isEtf: profile.isEtf ?? undefined,
     isFund: profile.isFund ?? undefined,
     marketCap: profile.marketCap ?? undefined,
@@ -68,6 +73,20 @@ export const mapProfileToInstrumentProfile = (
     price: profile.price ?? undefined,
     change: profile.change ?? undefined,
     changesPercentage: profile.changePercentage ?? undefined,
+  }
+}
+
+export const mapHistoricalMarketCapToPoint = (
+  point: FmpHistoricalMarketCapResponse,
+): InstrumentMarketCapPoint | undefined => {
+  if (!point.symbol || !point.date || point.marketCap === null || point.marketCap === undefined) {
+    return undefined
+  }
+
+  return {
+    symbol: point.symbol,
+    date: point.date,
+    marketCap: point.marketCap,
   }
 }
 
@@ -79,4 +98,10 @@ export const isInstrumentProfile = (
   profile: InstrumentProfile | undefined,
 ): profile is InstrumentProfile => {
   return Boolean(profile)
+}
+
+export const isInstrumentMarketCapPoint = (
+  point: InstrumentMarketCapPoint | undefined,
+): point is InstrumentMarketCapPoint => {
+  return Boolean(point)
 }

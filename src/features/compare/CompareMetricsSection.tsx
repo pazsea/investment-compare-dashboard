@@ -1,7 +1,9 @@
 import type { FC } from 'react'
 import clsx from 'clsx'
 
+import { formatCompactCurrencyValue, formatCurrencyValue, formatPercentChange } from './compareFormatters'
 import type { Props } from './CompareMetricsSection.types'
+import { getExchangeLabel } from '../../utils/instrumentPresentation'
 
 import * as styles from './ComparePage.css'
 
@@ -10,7 +12,7 @@ const CompareMetricsSection: FC<Props> = (props) => {
 
   const renderMetricCard = (entry: Props['metrics'][number]) => {
     const returnClassName =
-      entry.values.returnPercent >= 0 ? styles.positiveStat : styles.negativeStat
+      (entry.monthlyChangePercentage ?? 0) >= 0 ? styles.positiveStat : styles.negativeStat
 
     return (
       <article className={styles.metricCard} key={entry.instrument.symbol}>
@@ -20,28 +22,42 @@ const CompareMetricsSection: FC<Props> = (props) => {
         </header>
         <dl className={styles.statGrid}>
           <div>
-            <dt className={styles.statLabel}>Avkastning</dt>
-            <dd className={clsx(styles.statValue, returnClassName)}>{entry.values.returnPercent}%</dd>
+            <dt className={styles.statLabel}>1 mån börsvärde</dt>
+            <dd className={clsx(styles.statValue, returnClassName)}>
+              {formatPercentChange(entry.monthlyChangePercentage)}
+            </dd>
           </div>
           <div>
-            <dt className={styles.statLabel}>Volatilitet</dt>
-            <dd className={styles.statValue}>{entry.values.volatility}%</dd>
+            <dt className={styles.statLabel}>Pris</dt>
+            <dd className={styles.statValue}>
+              {entry.profile?.price !== undefined
+                ? formatCurrencyValue(entry.profile.price, entry.profile.currency)
+                : 'Saknas'}
+            </dd>
           </div>
           <div>
             <dt className={styles.statLabel}>Börsvärde</dt>
-            <dd className={styles.statValue}>{entry.values.marketCap} mdr</dd>
+            <dd className={styles.statValue}>
+              {entry.profile?.marketCap !== undefined
+                ? formatCompactCurrencyValue(entry.profile.marketCap, entry.profile.currency)
+                : 'Saknas'}
+            </dd>
           </div>
           <div>
-            <dt className={styles.statLabel}>P/E</dt>
-            <dd className={styles.statValue}>{entry.values.peRatio}</dd>
-          </div>
-          <div>
-            <dt className={styles.statLabel}>Utdelning</dt>
-            <dd className={styles.statValue}>{entry.values.dividendYield}%</dd>
+            <dt className={styles.statLabel}>Dagens förändring</dt>
+            <dd className={styles.statValue}>
+              {formatPercentChange(entry.profile?.changesPercentage)}
+            </dd>
           </div>
           <div>
             <dt className={styles.statLabel}>Volym</dt>
-            <dd className={styles.statValue}>{entry.values.volume.toLocaleString()}</dd>
+            <dd className={styles.statValue}>
+              {entry.profile?.volume !== undefined ? entry.profile.volume.toLocaleString('sv-SE') : 'Saknas'}
+            </dd>
+          </div>
+          <div>
+            <dt className={styles.statLabel}>Marknad</dt>
+            <dd className={styles.statValue}>{getExchangeLabel(entry.profile?.exchange ?? entry.instrument.exchange)}</dd>
           </div>
         </dl>
       </article>

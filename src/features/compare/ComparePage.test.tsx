@@ -14,6 +14,53 @@ import { mockInstruments } from '../../mocks/instruments'
 import { store } from '../../store'
 import ComparePage from './ComparePage'
 
+vi.mock('../../api/instrumentsApi', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../api/instrumentsApi')>()
+
+  return {
+    ...actual,
+    useGetInstrumentMarketCapHistoryQuery: () => ({
+      data: {
+        AAPL: [
+          { symbol: 'AAPL', date: '2026-04-08', marketCap: 100 },
+          { symbol: 'AAPL', date: '2026-05-08', marketCap: 110 },
+        ],
+        MSFT: [
+          { symbol: 'MSFT', date: '2026-04-08', marketCap: 100 },
+          { symbol: 'MSFT', date: '2026-05-08', marketCap: 95 },
+        ],
+      },
+      isError: false,
+      isFetching: false,
+    }),
+    useGetInstrumentProfilesQuery: () => ({
+      data: {
+        AAPL: {
+          symbol: 'AAPL',
+          name: 'Apple Inc.',
+          currency: 'USD',
+          exchange: 'NASDAQ',
+          marketCap: 3900351299800,
+          price: 262.82,
+          volume: 36725325,
+          changesPercentage: 1.24,
+        },
+        MSFT: {
+          symbol: 'MSFT',
+          name: 'Microsoft Corporation',
+          currency: 'USD',
+          exchange: 'NASDAQ',
+          marketCap: 3120000000000,
+          price: 483.16,
+          volume: 18442000,
+          changesPercentage: 0.71,
+        },
+      },
+      isFetching: false,
+    }),
+  }
+})
+
 vi.mock('../../components/DataTable/DataTable.css', () => ({
   cell: 'cell',
   headerCell: 'headerCell',
@@ -35,16 +82,47 @@ vi.mock('../../components/PageHeader/PageHeader.css', () => ({
   summary: 'summary',
   title: 'title',
 }))
+vi.mock('../../components/ErrorState/ErrorState.css', () => ({
+  container: 'container',
+  message: 'message',
+  title: 'title',
+}))
+vi.mock('../../components/LoadingState/LoadingState.css', () => ({
+  actionSkeleton: 'actionSkeleton',
+  cardActions: 'cardActions',
+  cardBody: 'cardBody',
+  cardGrid: 'cardGrid',
+  cardHeader: 'cardHeader',
+  cardSkeleton: 'cardSkeleton',
+  container: 'container',
+  detailsActions: 'detailsActions',
+  detailsHeader: 'detailsHeader',
+  detailsMeta: 'detailsMeta',
+  detailsMetaPill: 'detailsMetaPill',
+  detailsMetrics: 'detailsMetrics',
+  detailsSkeleton: 'detailsSkeleton',
+  detailsSymbol: 'detailsSymbol',
+  detailsTitle: 'detailsTitle',
+  message: 'message',
+  metaRow: 'metaRow',
+  metricLabelSkeleton: 'metricLabelSkeleton',
+  metricSkeleton: 'metricSkeleton',
+  metricValueSkeleton: 'metricValueSkeleton',
+  skeletonAccent: 'skeletonAccent',
+  skeletonButton: 'skeletonButton',
+  skeletonChip: 'skeletonChip',
+  skeletonLine: 'skeletonLine',
+  skeletonLineShort: 'skeletonLineShort',
+  skeletonLineWide: 'skeletonLineWide',
+  title: 'title',
+}))
 vi.mock('./ComparePage.css', () => ({
-  activeRangeButton: 'activeRangeButton',
-  amountField: 'amountField',
-  amountInput: 'amountInput',
-  amountLabel: 'amountLabel',
   button: 'button',
   card: 'card',
   cardHeader: 'cardHeader',
   chartCanvas: 'chartCanvas',
   chartHeader: 'chartHeader',
+  chartPill: 'chartPill',
   chartSection: 'chartSection',
   chartSummary: 'chartSummary',
   chartTitle: 'chartTitle',
@@ -65,13 +143,7 @@ vi.mock('./ComparePage.css', () => ({
   negativeStat: 'negativeStat',
   page: 'page',
   positiveStat: 'positiveStat',
-  rangeButton: 'rangeButton',
-  rangeControls: 'rangeControls',
   removeButton: 'removeButton',
-  scenarioCard: 'scenarioCard',
-  scenarioCards: 'scenarioCards',
-  scenarioGrid: 'scenarioGrid',
-  scenarioSection: 'scenarioSection',
   shell: 'shell',
   statGrid: 'statGrid',
   statLabel: 'statLabel',
@@ -142,8 +214,7 @@ describe('when instruments are selected for comparison', () => {
 
     expect(screen.getByRole('heading', { name: 'Valda instrument' })).toBeInTheDocument()
     expect(screen.getByText('2 instrument')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Relativ utveckling' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Om du investerade vid periodens början' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Börsvärde senaste månaden' })).toBeInTheDocument()
     expect(screen.queryByText('Inga instrument har lagts till för jämförelse ännu.')).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Rensa alla' }))

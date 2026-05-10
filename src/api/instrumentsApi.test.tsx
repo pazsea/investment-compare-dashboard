@@ -33,6 +33,20 @@ const server = setupServer(
       },
     ])
   }),
+  http.get('https://financialmodelingprep.com/stable/historical-market-capitalization', () => {
+    return HttpResponse.json([
+      {
+        symbol: 'NVDA',
+        date: '2026-04-08',
+        marketCap: 200,
+      },
+      {
+        symbol: 'NVDA',
+        date: '2026-05-08',
+        marketCap: 220,
+      },
+    ])
+  }),
 )
 
 describe('when RTK Query searches with the FMP API enabled', () => {
@@ -117,6 +131,7 @@ describe('when RTK Query searches with the FMP API enabled', () => {
         city: undefined,
         state: undefined,
         image: undefined,
+        defaultImage: undefined,
         isEtf: undefined,
         isFund: undefined,
         marketCap: undefined,
@@ -159,6 +174,44 @@ describe('when RTK Query searches with the FMP API enabled', () => {
 
     await waitFor(() => {
       expect(result.current.isError).toBe(true)
+    })
+  })
+
+  it('should map historical market cap series for compare charts', async () => {
+    vi.stubEnv('VITE_USE_FMP_API', 'true')
+    vi.stubEnv('VITE_FMP_API_KEY', 'test-key')
+
+    const { instrumentsApi, useGetInstrumentMarketCapHistoryQuery } = await import('./instrumentsApi')
+    const testStore = configureStore({
+      reducer: {
+        [instrumentsApi.reducerPath]: instrumentsApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(instrumentsApi.middleware),
+    })
+
+    const Wrapper = (props: { children: ReactNode }) => {
+      return <Provider store={testStore}>{props.children}</Provider>
+    }
+
+    const { result } = renderHook(() => useGetInstrumentMarketCapHistoryQuery(['nvda']), {
+      wrapper: Wrapper,
+    })
+
+    await waitFor(() => {
+      expect(result.current.data).toEqual({
+        NVDA: [
+          {
+            symbol: 'NVDA',
+            date: '2026-04-08',
+            marketCap: 200,
+          },
+          {
+            symbol: 'NVDA',
+            date: '2026-05-08',
+            marketCap: 220,
+          },
+        ],
+      })
     })
   })
 })

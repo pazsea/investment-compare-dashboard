@@ -1,12 +1,8 @@
-import type { Instrument } from '../../types/instrument'
-import type { CompareMetric } from './comparePerformance'
+import type { Instrument, InstrumentMarketCapPoint, InstrumentProfile } from '../../types/instrument'
 
 export type CompareMetricEntry = {
   instrument: Instrument
-  values: CompareMetric
-}
-
-export type CompareScenarioEntry = CompareMetricEntry & {
-  endingValue: number
-  gainLoss: number
+  marketCapHistory: InstrumentMarketCapPoint[]
+  monthlyChangePercentage?: number
+  profile?: InstrumentProfile
 }

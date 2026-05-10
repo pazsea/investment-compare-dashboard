@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest'
 import {
   inferInstrumentType,
   isInstrument,
+  isInstrumentMarketCapPoint,
   isInstrumentProfile,
+  mapHistoricalMarketCapToPoint,
   mapProfileToInstrumentProfile,
   mapSearchResultToInstrument,
 } from './fmpMappers'
@@ -64,6 +66,7 @@ describe('when mapping FMP profile results', () => {
       city: undefined,
       state: undefined,
       image: undefined,
+      defaultImage: undefined,
       isEtf: undefined,
       isFund: undefined,
       marketCap: undefined,
@@ -76,5 +79,25 @@ describe('when mapping FMP profile results', () => {
 
   it('should skip incomplete profile payloads', () => {
     expect(isInstrumentProfile(mapProfileToInstrumentProfile({ symbol: 'AAPL' }))).toBe(false)
+  })
+})
+
+describe('when mapping FMP market cap history results', () => {
+  it('should create domain points when required fields exist', () => {
+    expect(
+      mapHistoricalMarketCapToPoint({
+        symbol: 'AAPL',
+        date: '2026-04-08',
+        marketCap: 3818298106199,
+      }),
+    ).toEqual({
+      symbol: 'AAPL',
+      date: '2026-04-08',
+      marketCap: 3818298106199,
+    })
+  })
+
+  it('should skip incomplete market cap history payloads', () => {
+    expect(isInstrumentMarketCapPoint(mapHistoricalMarketCapToPoint({ symbol: 'AAPL' }))).toBe(false)
   })
 })

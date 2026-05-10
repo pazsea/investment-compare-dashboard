@@ -30,9 +30,16 @@ export type FmpProfileResponse = {
   city?: NullableString
   state?: NullableString
   image?: NullableString
+  defaultImage?: NullableBoolean
   isEtf?: NullableBoolean
   isFund?: NullableBoolean
   volume?: NullableNumber
   change?: NullableNumber
   changePercentage?: NullableNumber
+}
+
+export type FmpHistoricalMarketCapResponse = {
+  symbol?: NullableString
+  date?: NullableString
+  marketCap?: NullableNumber
 }
