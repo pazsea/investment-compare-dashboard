@@ -8,9 +8,13 @@ import {
   YAxis,
 } from 'recharts'
 
-import { formatRoundedChartTick } from './compareFormatters'
 import { compareChartColors, COMPARE_CHART_MARGIN } from './compareConstants'
 import type { Props } from './CompareChartSection.types'
+import {
+  formatRoundedChartTick,
+  getRoundedChartDomainMax,
+  getRoundedChartDomainMin,
+} from '../../utils/chartPresentation'
 
 import * as styles from './ComparePage.css'
 
@@ -62,7 +66,7 @@ const CompareChartSection: FC<Props> = (props) => {
                 axisLine={false}
                 width={48}
                 tickFormatter={formatRoundedChartTick}
-                domain={['dataMin - 4', 'dataMax + 4']}
+                domain={[getRoundedChartDomainMin, getRoundedChartDomainMax]}
               />
               <Tooltip />
               {selectedInstruments.map(renderInstrumentLine)}

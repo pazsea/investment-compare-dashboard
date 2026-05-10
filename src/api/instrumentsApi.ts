@@ -37,11 +37,13 @@ const withApiKey = (params: Record<string, string>) => ({
 
 const getFallbackSearch = (query: string) => ({ data: searchMockInstruments(query) })
 const getFallbackProfile = (symbol: string) => ({ data: findMockProfile(symbol) })
+const HISTORICAL_WINDOW_FROM_BUFFER_DAYS = 1
 
 const createHistoricalWindow = () => {
   const to = new Date()
   const from = new Date(to)
   from.setUTCMonth(from.getUTCMonth() - 1)
+  from.setUTCDate(from.getUTCDate() + HISTORICAL_WINDOW_FROM_BUFFER_DAYS)
 
   return {
     from: from.toISOString().slice(0, 10),

@@ -14,6 +14,11 @@ import { useCompareSelection } from '../../hooks/useCompareSelection'
 import { useWatchlist } from '../../hooks/useWatchlist'
 import { vars } from '../../styles/theme.css'
 import type { Instrument, InstrumentProfile } from '../../types/instrument'
+import {
+  formatRoundedChartTick,
+  getRoundedChartDomainMax,
+  getRoundedChartDomainMin,
+} from '../../utils/chartPresentation'
 import { getExchangeLabel, getInstrumentTypeLabel } from '../../utils/instrumentPresentation'
 import { isDetailsLocationState } from './detailsTypeguards'
 import {
@@ -229,7 +234,8 @@ const InstrumentDetailsPage: FC = () => {
                         tickLine={false}
                         axisLine={false}
                         width={56}
-                        domain={['dataMin - 1', 'dataMax + 1']}
+                        tickFormatter={formatRoundedChartTick}
+                        domain={[getRoundedChartDomainMin, getRoundedChartDomainMax]}
                       />
                       <Area
                         type="monotone"

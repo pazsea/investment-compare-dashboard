@@ -5,7 +5,9 @@ import {
   useGetInstrumentMarketCapHistoryQuery,
   useGetInstrumentProfilesQuery,
 } from '../../api/instrumentsApi'
+import { shouldUseFmpApi } from '../../api/config'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
+import { getUnsupportedCompareSymbols } from './compareAvailability'
 import { getCompareChartData, getMarketCapChangePercentage } from './compareHistory'
 import { createCompareColumns } from './compareTable'
 import type { CompareMetricEntry } from './compareTypes'
@@ -16,12 +18,18 @@ export const useComparePage = () => {
   const selectedSymbols = useMemo(() => {
     return selectedInstruments.map((instrument) => instrument.symbol)
   }, [selectedInstruments])
+  const unsupportedSymbols = useMemo(() => {
+    return shouldUseFmpApi ? getUnsupportedCompareSymbols(selectedSymbols) : []
+  }, [selectedSymbols])
+  const supportedSymbols = useMemo(() => {
+    return selectedSymbols.filter((symbol) => !unsupportedSymbols.includes(symbol))
+  }, [selectedSymbols, unsupportedSymbols])
   const {
     data: marketCapHistory = {},
     isError: isMarketCapHistoryError,
     isFetching: isMarketCapHistoryFetching,
-  } = useGetInstrumentMarketCapHistoryQuery(selectedSymbols, {
-    skip: selectedCount === 0,
+  } = useGetInstrumentMarketCapHistoryQuery(supportedSymbols, {
+    skip: selectedCount === 0 || supportedSymbols.length === 0,
   })
   const {
     data: profiles = {},
@@ -72,5 +80,6 @@ export const useComparePage = () => {
     metrics,
     selectedCount,
     selectedInstruments,
+    unsupportedSymbols,
   }
 }

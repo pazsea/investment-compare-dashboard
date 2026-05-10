@@ -60,6 +60,14 @@ vi.mock('../../api/instrumentsApi', async (importOriginal) => {
     }),
   }
 })
+vi.mock('../../api/config', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../api/config')>()
+
+  return {
+    ...actual,
+    shouldUseFmpApi: true,
+  }
+})
 
 vi.mock('../../components/DataTable/DataTable.css', () => ({
   cell: 'cell',
@@ -220,5 +228,28 @@ describe('when instruments are selected for comparison', () => {
     await user.click(screen.getByRole('button', { name: 'Rensa alla' }))
 
     expect(screen.getByText('Inga instrument har lagts till för jämförelse ännu.')).toBeInTheDocument()
+  })
+})
+
+describe('when the user selects symbols outside the compare allowlist', () => {
+  beforeEach(() => {
+    store.dispatch(clearCompare())
+    store.dispatch(clearWatchlist())
+  })
+
+  afterEach(() => {
+    store.dispatch(clearCompare())
+    store.dispatch(clearWatchlist())
+  })
+
+  it('should explain that the free API only supports certain compare symbols', () => {
+    store.dispatch(addToCompare(mockInstruments[4]))
+
+    showComparePage()
+
+    expect(screen.getByText('Begränsning i gratisversionen')).toBeInTheDocument()
+    expect(
+      screen.getByText(/Följande valda instrument stöds inte för jämförelse just nu: VTSAX./),
+    ).toBeInTheDocument()
   })
 })

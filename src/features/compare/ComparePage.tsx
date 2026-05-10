@@ -1,5 +1,6 @@
 import type { FC } from 'react'
 
+import CompareApiNotice from './CompareApiNotice'
 import CompareChartSection from './CompareChartSection'
 import CompareMetricsSection from './CompareMetricsSection'
 import CompareMobileList from './CompareMobileList'
@@ -25,6 +26,7 @@ const ComparePage: FC = () => {
     metrics,
     selectedCount,
     selectedInstruments,
+    unsupportedSymbols,
   } = useComparePage()
 
   return (
@@ -44,6 +46,9 @@ const ComparePage: FC = () => {
           <section aria-labelledby="compare-results-heading">
             <div className={styles.compareContent}>
               <CompareToolbar onClearCompare={handleClearCompare} selectedCount={selectedCount} />
+              {unsupportedSymbols.length > 0 && (
+                <CompareApiNotice unsupportedSymbols={unsupportedSymbols} />
+              )}
               {isLoading && (
                 <LoadingState
                   title="Laddar jämförelsedata"

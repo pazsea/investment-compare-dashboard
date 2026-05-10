@@ -10,10 +10,6 @@ export const formatCurrencyValue = (value: number, currency = 'SEK') => {
   }
 }
 
-export const formatRoundedChartTick = (value: unknown) => {
-  return String(Math.round(Number(value)))
-}
-
 export const formatCompactCurrencyValue = (value: number, currency = 'SEK') => {
   try {
     return new Intl.NumberFormat('sv-SE', {
