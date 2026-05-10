@@ -1,0 +1,118 @@
+import { createTheme } from '@vanilla-extract/css'
+
+export const breakpoints = {
+  mobile: '480px',
+  tablet: '768px',
+  desktop: '1024px',
+  wide: '1280px',
+}
+
+export const [lightThemeClass, vars] = createTheme({
+  colors: {
+    background: '#F6F8FB',
+    surface: '#FFFFFF',
+    surfaceElevated: '#F9FAFC',
+    border: '#DDE3EA',
+    borderStrong: '#B8C2CC',
+    text: '#111827',
+    textMuted: '#4B5563',
+    textSubtle: '#6B7280',
+    primary: '#2563EB',
+    primaryHover: '#1D4ED8',
+    primarySoft: '#DBEAFE',
+    positive: '#059669',
+    positiveSoft: '#D1FAE5',
+    negative: '#DC2626',
+    negativeSoft: '#FEE2E2',
+    warning: '#D97706',
+    warningSoft: '#FEF3C7',
+    focus: '#60A5FA',
+  },
+  space: {
+    xs: '4px',
+    sm: '8px',
+    md: '12px',
+    lg: '16px',
+    xl: '24px',
+    xxl: '32px',
+  },
+  radii: {
+    sm: '6px',
+    md: '10px',
+    lg: '14px',
+    xl: '20px',
+    full: '999px',
+  },
+  font: {
+    body: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    mono: 'SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace',
+  },
+  fontSize: {
+    xs: '12px',
+    sm: '14px',
+    md: '16px',
+    lg: '18px',
+    xl: '24px',
+    xxl: '32px',
+  },
+  shadow: {
+    sm: '0 1px 2px rgb(15 23 42 / 0.08)',
+    md: '0 8px 20px rgb(15 23 42 / 0.10)',
+    lg: '0 18px 40px rgb(15 23 42 / 0.14)',
+  },
+})
+
+export const darkThemeClass = createTheme(vars, {
+  colors: {
+    background: '#0B1120',
+    surface: '#111827',
+    surfaceElevated: '#1F2937',
+    border: '#263244',
+    borderStrong: '#3B4A5F',
+    text: '#F9FAFB',
+    textMuted: '#D1D5DB',
+    textSubtle: '#9CA3AF',
+    primary: '#60A5FA',
+    primaryHover: '#93C5FD',
+    primarySoft: '#172554',
+    positive: '#34D399',
+    positiveSoft: '#064E3B',
+    negative: '#F87171',
+    negativeSoft: '#7F1D1D',
+    warning: '#FBBF24',
+    warningSoft: '#78350F',
+    focus: '#93C5FD',
+  },
+  space: {
+    xs: '4px',
+    sm: '8px',
+    md: '12px',
+    lg: '16px',
+    xl: '24px',
+    xxl: '32px',
+  },
+  radii: {
+    sm: '6px',
+    md: '10px',
+    lg: '14px',
+    xl: '20px',
+    full: '999px',
+  },
+  font: {
+    body: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    mono: 'SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace',
+  },
+  fontSize: {
+    xs: '12px',
+    sm: '14px',
+    md: '16px',
+    lg: '18px',
+    xl: '24px',
+    xxl: '32px',
+  },
+  shadow: {
+    sm: '0 1px 2px rgb(0 0 0 / 0.24)',
+    md: '0 8px 20px rgb(0 0 0 / 0.28)',
+    lg: '0 18px 40px rgb(0 0 0 / 0.34)',
+  },
+})
