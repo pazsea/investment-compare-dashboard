@@ -74,26 +74,15 @@ export const link = style({
   },
 })
 
-export const themeButton = style({
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: vars.space.sm,
-  minHeight: '44px',
+export const themeToggle = style({
+  display: 'inline-grid',
+  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
   width: '100%',
+  gap: vars.space.xs,
+  padding: vars.space.xs,
   border: `1px solid ${vars.colors.border}`,
-  borderRadius: vars.radii.sm,
+  borderRadius: vars.radii.full,
   background: vars.colors.surfaceElevated,
-  color: vars.colors.text,
-  cursor: 'pointer',
-  fontSize: vars.fontSize.sm,
-  fontWeight: 700,
-  padding: `${vars.space.sm} ${vars.space.lg}`,
-  transition: 'border-color 180ms ease, background-color 180ms ease, color 180ms ease',
-
-  ':hover': {
-    borderColor: vars.colors.borderStrong,
-  },
 
   '@media': {
     [`(min-width: ${breakpoints.tablet})`]: {
@@ -101,6 +90,33 @@ export const themeButton = style({
     },
   },
 })
+
+export const themeOption = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: '36px',
+  minWidth: '36px',
+  border: 0,
+  borderRadius: vars.radii.full,
+  background: 'transparent',
+  color: vars.colors.textSubtle,
+  cursor: 'pointer',
+  transition: 'border-color 180ms ease, background-color 180ms ease, color 180ms ease',
+
+  ':hover': {
+    color: vars.colors.text,
+  },
+})
+
+export const activeThemeOption = style([
+  themeOption,
+  {
+    background: vars.colors.surface,
+    color: vars.colors.primary,
+    boxShadow: vars.shadow.sm,
+  },
+])
 
 export const themeIcon = style({
   flexShrink: 0,

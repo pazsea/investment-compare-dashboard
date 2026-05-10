@@ -10,6 +10,7 @@ export type Props = {
 }
 
 type ThemeContextValue = {
+  setTheme: (theme: ThemeMode) => void
   theme: ThemeMode
   toggleTheme: () => void
 }
@@ -42,7 +43,9 @@ export const ThemeProvider: FC<Props> = (props) => {
   }
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>{props.children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={{ setTheme, theme, toggleTheme }}>
+      {props.children}
+    </ThemeContext.Provider>
   )
 }
 

@@ -1,4 +1,5 @@
-import type { FC, ReactNode } from 'react'
+import { useCallback } from 'react'
+import type { FC, MouseEvent, ReactNode } from 'react'
 import { Moon, SunMedium } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -13,10 +14,18 @@ export type Props = {
 }
 
 const AppLayout: FC<Props> = (props) => {
-  const { theme, toggleTheme } = useTheme()
-  const themeButtonLabel = theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
-  const themeButtonText = theme === 'dark' ? 'Light mode' : 'Dark mode'
-  const ThemeIcon = theme === 'dark' ? SunMedium : Moon
+  const { setTheme, theme } = useTheme()
+
+  const handleThemeSelect = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      const nextTheme = event.currentTarget.dataset.theme
+
+      if (nextTheme === 'light' || nextTheme === 'dark') {
+        setTheme(nextTheme)
+      }
+    },
+    [setTheme],
+  )
 
   return (
     <div className={styles.shell}>
@@ -36,16 +45,28 @@ const AppLayout: FC<Props> = (props) => {
               Watchlist
             </Link>
           </div>
-          <button
-            className={styles.themeButton}
-            type="button"
-            aria-label={themeButtonLabel}
-            aria-pressed={theme === 'dark'}
-            onClick={toggleTheme}
-          >
-            <ThemeIcon className={styles.themeIcon} aria-hidden="true" />
-            <span>{themeButtonText}</span>
-          </button>
+          <div className={styles.themeToggle} role="group" aria-label="Theme mode">
+            <button
+              className={theme === 'light' ? styles.activeThemeOption : styles.themeOption}
+              type="button"
+              data-theme="light"
+              aria-label="Switch to light theme"
+              aria-pressed={theme === 'light'}
+              onClick={handleThemeSelect}
+            >
+              <SunMedium className={styles.themeIcon} aria-hidden="true" />
+            </button>
+            <button
+              className={theme === 'dark' ? styles.activeThemeOption : styles.themeOption}
+              type="button"
+              data-theme="dark"
+              aria-label="Switch to dark theme"
+              aria-pressed={theme === 'dark'}
+              onClick={handleThemeSelect}
+            >
+              <Moon className={styles.themeIcon} aria-hidden="true" />
+            </button>
+          </div>
         </nav>
       </header>
       {props.children}
