@@ -2,6 +2,7 @@
  * @vitest-environment jsdom
  */
 import { Provider } from 'react-redux'
+import { MemoryRouter } from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -14,6 +15,7 @@ import InstrumentCard from './InstrumentCard'
 
 vi.mock('./InstrumentCard.css', () => ({
   actions: 'actions',
+  action: 'action',
   button: 'button',
   card: 'card',
   header: 'header',
@@ -37,7 +39,9 @@ const instrument: Instrument = {
 const showInstrumentCard = () => {
   return render(
     <Provider store={store}>
-      <InstrumentCard instrument={instrument} />
+      <MemoryRouter>
+        <InstrumentCard instrument={instrument} />
+      </MemoryRouter>
     </Provider>,
   )
 }
@@ -58,6 +62,10 @@ describe('when showing an instrument card', () => {
     expect(screen.getByText('STOCK')).toBeInTheDocument()
     expect(screen.getByText('NASDAQ')).toBeInTheDocument()
     expect(screen.getByText('USD')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'View details' })).toHaveAttribute(
+      'href',
+      '/instrument/AAPL',
+    )
   })
 
   it('should allow the instrument to be selected for comparison', async () => {

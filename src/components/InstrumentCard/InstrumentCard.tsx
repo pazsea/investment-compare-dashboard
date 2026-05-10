@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import type { FC } from 'react'
+import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 
 import { useCompareSelection } from '../../hooks/useCompareSelection'
@@ -14,6 +15,10 @@ export type Props = {
 
 const getInstrumentTypeLabel = (type: Instrument['type']) => {
   return type.toUpperCase()
+}
+
+const getInstrumentDetailsPath = (symbol: string) => {
+  return `/instrument/${encodeURIComponent(symbol)}`
 }
 
 const InstrumentCard: FC<Props> = (props) => {
@@ -65,6 +70,9 @@ const InstrumentCard: FC<Props> = (props) => {
       </div>
 
       <div className={styles.actions} aria-label={`${instrument.symbol} actions`}>
+        <Link className={styles.action} to={getInstrumentDetailsPath(instrument.symbol)}>
+          View details
+        </Link>
         <button
           className={compareButtonClassName}
           type="button"

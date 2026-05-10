@@ -2,6 +2,7 @@
  * @vitest-environment jsdom
  */
 import { Provider } from 'react-redux'
+import { MemoryRouter } from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -30,6 +31,7 @@ vi.mock('./SearchPage.css', () => ({
 
 vi.mock('../../components/InstrumentCard/InstrumentCard.css', () => ({
   actions: 'actions',
+  action: 'action',
   button: 'button',
   card: 'card',
   header: 'header',
@@ -44,7 +46,9 @@ vi.mock('../../components/InstrumentCard/InstrumentCard.css', () => ({
 const showSearchPage = () => {
   return render(
     <Provider store={store}>
-      <SearchPage />
+      <MemoryRouter>
+        <SearchPage />
+      </MemoryRouter>
     </Provider>,
   )
 }

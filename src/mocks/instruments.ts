@@ -118,3 +118,9 @@ export const findMockQuote = (symbol: string) => {
 
   return mockQuotes.find((quote) => quote.symbol === normalizedSymbol)
 }
+
+export const findMockInstrument = (symbol: string) => {
+  const normalizedSymbol = symbol.trim().toUpperCase()
+
+  return mockInstruments.find((instrument) => instrument.symbol === normalizedSymbol)
+}

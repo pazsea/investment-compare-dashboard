@@ -69,10 +69,16 @@ export const actions = style({
     '(min-width: 480px)': {
       gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
     },
+    '(min-width: 768px)': {
+      gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+    },
   },
 })
 
-export const button = style({
+export const action = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   minHeight: '44px',
   border: `1px solid ${vars.colors.border}`,
   borderRadius: vars.radii.sm,
@@ -81,12 +87,17 @@ export const button = style({
   cursor: 'pointer',
   fontSize: vars.fontSize.sm,
   fontWeight: 700,
+  padding: `${vars.space.sm} ${vars.space.md}`,
+  textAlign: 'center',
+  textDecoration: 'none',
 
   ':disabled': {
     color: vars.colors.textMuted,
     cursor: 'not-allowed',
   },
 })
+
+export const button = style([action])
 
 export const selectedButton = style({
   borderColor: vars.colors.primary,
