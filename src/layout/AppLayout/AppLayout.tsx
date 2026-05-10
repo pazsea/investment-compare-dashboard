@@ -1,4 +1,5 @@
 import type { FC, ReactNode } from 'react'
+import { Moon, SunMedium } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { BrandMark } from '../../components/BrandMark'
@@ -14,6 +15,8 @@ export type Props = {
 const AppLayout: FC<Props> = (props) => {
   const { theme, toggleTheme } = useTheme()
   const themeButtonLabel = theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
+  const themeButtonText = theme === 'dark' ? 'Light mode' : 'Dark mode'
+  const ThemeIcon = theme === 'dark' ? SunMedium : Moon
 
   return (
     <div className={styles.shell}>
@@ -40,9 +43,11 @@ const AppLayout: FC<Props> = (props) => {
             className={styles.themeButton}
             type="button"
             aria-label={themeButtonLabel}
+            aria-pressed={theme === 'dark'}
             onClick={toggleTheme}
           >
-            {theme === 'dark' ? 'Light theme' : 'Dark theme'}
+            <ThemeIcon className={styles.themeIcon} aria-hidden="true" />
+            <span>{themeButtonText}</span>
           </button>
         </nav>
       </header>

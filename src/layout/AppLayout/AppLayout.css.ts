@@ -75,6 +75,10 @@ export const link = style({
 })
 
 export const themeButton = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: vars.space.sm,
   minHeight: '44px',
   width: '100%',
   border: `1px solid ${vars.colors.border}`,
@@ -85,10 +89,21 @@ export const themeButton = style({
   fontSize: vars.fontSize.sm,
   fontWeight: 700,
   padding: `${vars.space.sm} ${vars.space.lg}`,
+  transition: 'border-color 180ms ease, background-color 180ms ease, color 180ms ease',
+
+  ':hover': {
+    borderColor: vars.colors.borderStrong,
+  },
 
   '@media': {
     [`(min-width: ${breakpoints.tablet})`]: {
       width: 'auto',
     },
   },
+})
+
+export const themeIcon = style({
+  flexShrink: 0,
+  width: '16px',
+  height: '16px',
 })

@@ -27,6 +27,7 @@ globalStyle('body', {
   fontSize: vars.fontSize.md,
   WebkitFontSmoothing: 'antialiased',
   MozOsxFontSmoothing: 'grayscale',
+  transition: 'background-color 180ms ease, color 180ms ease',
 })
 
 globalStyle('#root', {
@@ -35,10 +36,12 @@ globalStyle('#root', {
 
 globalStyle('button', {
   font: 'inherit',
+  transition: 'border-color 180ms ease, background-color 180ms ease, color 180ms ease, box-shadow 180ms ease',
 })
 
 globalStyle('a', {
   color: 'inherit',
+  transition: 'color 180ms ease, background-color 180ms ease',
 })
 
 globalStyle(':focus-visible', {
