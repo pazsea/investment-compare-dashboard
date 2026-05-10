@@ -24,6 +24,7 @@ export const hero = style({
   borderRadius: vars.radii.md,
   background: vars.colors.surface,
   boxShadow: vars.shadow.md,
+  transition: 'box-shadow 180ms ease, border-color 180ms ease',
 
   '@media': {
     [`(min-width: ${breakpoints.desktop})`]: {
@@ -74,6 +75,13 @@ export const cta = style({
   fontWeight: 700,
   padding: `${vars.space.sm} ${vars.space.lg}`,
   textDecoration: 'none',
+  transition: 'transform 180ms ease, background-color 180ms ease, box-shadow 180ms ease',
+
+  ':hover': {
+    transform: 'translateY(-1px)',
+    background: vars.colors.primaryHover,
+    boxShadow: vars.shadow.md,
+  },
 })
 
 export const grid = style({
@@ -96,6 +104,13 @@ export const panel = style({
   borderRadius: vars.radii.md,
   background: vars.colors.surface,
   boxShadow: vars.shadow.sm,
+  transition: 'transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease',
+
+  ':hover': {
+    transform: 'translateY(-2px)',
+    borderColor: vars.colors.borderStrong,
+    boxShadow: vars.shadow.md,
+  },
 })
 
 export const panelHeader = style({
@@ -116,6 +131,11 @@ export const panelLink = style({
   fontSize: vars.fontSize.sm,
   fontWeight: 700,
   textDecoration: 'none',
+  transition: 'color 180ms ease',
+
+  ':hover': {
+    color: vars.colors.primaryHover,
+  },
 })
 
 export const emptyText = style({
@@ -140,6 +160,12 @@ export const item = style({
   border: `1px solid ${vars.colors.border}`,
   borderRadius: vars.radii.sm,
   background: vars.colors.surfaceElevated,
+  transition: 'transform 180ms ease, border-color 180ms ease, background-color 180ms ease',
+
+  ':hover': {
+    transform: 'translateY(-1px)',
+    borderColor: vars.colors.borderStrong,
+  },
 })
 
 export const itemLink = style({
@@ -147,6 +173,11 @@ export const itemLink = style({
   fontSize: vars.fontSize.md,
   fontWeight: 700,
   textDecoration: 'none',
+  transition: 'color 180ms ease',
+
+  ':hover': {
+    color: vars.colors.primary,
+  },
 })
 
 export const meta = style({

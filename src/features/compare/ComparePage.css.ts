@@ -77,6 +77,12 @@ export const button = style({
   fontSize: vars.fontSize.sm,
   fontWeight: 700,
   padding: `${vars.space.sm} ${vars.space.lg}`,
+  transition: 'transform 180ms ease, border-color 180ms ease, background-color 180ms ease, color 180ms ease',
+
+  ':hover': {
+    borderColor: vars.colors.borderStrong,
+    transform: 'translateY(-1px)',
+  },
 
   ':disabled': {
     color: vars.colors.textMuted,
@@ -135,6 +141,12 @@ export const chartSection = style({
   borderRadius: vars.radii.md,
   background: vars.colors.surface,
   boxShadow: vars.shadow.sm,
+  transition: 'box-shadow 180ms ease, border-color 180ms ease',
+
+  ':hover': {
+    borderColor: vars.colors.borderStrong,
+    boxShadow: vars.shadow.md,
+  },
 })
 
 export const chartHeader = style({
@@ -178,6 +190,12 @@ export const rangeButton = style({
   fontSize: vars.fontSize.xs,
   fontWeight: 700,
   padding: `${vars.space.xs} ${vars.space.sm}`,
+  transition: 'transform 180ms ease, border-color 180ms ease, background-color 180ms ease, color 180ms ease',
+
+  ':hover': {
+    transform: 'translateY(-1px)',
+    borderColor: vars.colors.borderStrong,
+  },
 })
 
 export const activeRangeButton = style({
@@ -217,6 +235,13 @@ export const metricCard = style({
   borderRadius: vars.radii.md,
   background: vars.colors.surface,
   boxShadow: vars.shadow.sm,
+  transition: 'transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease',
+
+  ':hover': {
+    transform: 'translateY(-2px)',
+    borderColor: vars.colors.borderStrong,
+    boxShadow: vars.shadow.md,
+  },
 })
 
 export const metricHeader = style({
@@ -274,6 +299,13 @@ export const card = style({
   borderRadius: vars.radii.md,
   background: vars.colors.surface,
   boxShadow: vars.shadow.sm,
+  transition: 'transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease',
+
+  ':hover': {
+    transform: 'translateY(-2px)',
+    borderColor: vars.colors.borderStrong,
+    boxShadow: vars.shadow.md,
+  },
 })
 
 export const cardHeader = style({

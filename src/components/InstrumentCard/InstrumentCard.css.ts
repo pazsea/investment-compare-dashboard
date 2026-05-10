@@ -13,6 +13,13 @@ export const card = style({
   borderRadius: vars.radii.md,
   background: vars.colors.surface,
   boxShadow: vars.shadow.sm,
+  transition: 'transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease',
+
+  ':hover': {
+    transform: 'translateY(-2px)',
+    borderColor: vars.colors.borderStrong,
+    boxShadow: vars.shadow.md,
+  },
 })
 
 export const header = style({
@@ -90,6 +97,12 @@ export const action = style({
   padding: `${vars.space.sm} ${vars.space.md}`,
   textAlign: 'center',
   textDecoration: 'none',
+  transition: 'transform 180ms ease, border-color 180ms ease, background-color 180ms ease, color 180ms ease',
+
+  ':hover': {
+    borderColor: vars.colors.borderStrong,
+    transform: 'translateY(-1px)',
+  },
 
   ':disabled': {
     color: vars.colors.textMuted,
