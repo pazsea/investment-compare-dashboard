@@ -36,9 +36,9 @@ export const search = style({
 })
 
 export const brand = style({
+  display: 'inline-flex',
+  alignItems: 'center',
   color: vars.colors.text,
-  fontSize: vars.fontSize.lg,
-  fontWeight: 800,
   textDecoration: 'none',
 })
 

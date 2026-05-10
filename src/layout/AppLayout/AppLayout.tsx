@@ -1,6 +1,7 @@
 import type { FC, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
+import { BrandMark } from '../../components/BrandMark'
 import { GlobalSearch } from '../../components/GlobalSearch'
 import { useTheme } from '../../context/ThemeContext'
 
@@ -19,7 +20,7 @@ const AppLayout: FC<Props> = (props) => {
       <header className={styles.header}>
         <nav className={styles.nav} aria-label="Primary navigation">
           <Link className={styles.brand} to="/">
-            Investment Compare
+            <BrandMark />
           </Link>
           <div className={styles.search}>
             <GlobalSearch />
