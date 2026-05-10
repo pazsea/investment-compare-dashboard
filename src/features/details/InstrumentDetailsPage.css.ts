@@ -32,6 +32,23 @@ export const panel = style({
   },
 })
 
+export const hero = style({
+  display: 'grid',
+  gap: vars.space.lg,
+})
+
+export const heroHeader = style({
+  display: 'grid',
+  gap: vars.space.lg,
+
+  '@media': {
+    [`(min-width: ${breakpoints.tablet})`]: {
+      gridTemplateColumns: 'minmax(0, 1fr) auto',
+      alignItems: 'start',
+    },
+  },
+})
+
 export const header = style({
   display: 'grid',
   gap: vars.space.md,
@@ -55,8 +72,98 @@ export const meta = style({
   display: 'flex',
   flexWrap: 'wrap',
   gap: vars.space.sm,
+})
+
+export const badge = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  minHeight: '28px',
+  borderRadius: vars.radii.full,
+  background: vars.colors.surfaceElevated,
+  color: vars.colors.textMuted,
+  fontSize: vars.fontSize.xs,
+  fontWeight: 700,
+  padding: `${vars.space.xs} ${vars.space.sm}`,
+})
+
+export const heroMetrics = style({
+  display: 'grid',
+  gap: vars.space.xs,
+})
+
+export const heroPrice = style({
+  color: vars.colors.text,
+  fontSize: vars.fontSize.xxl,
+  fontWeight: 800,
+  lineHeight: 1.1,
+})
+
+export const heroChange = style({
+  fontSize: vars.fontSize.md,
+  fontWeight: 700,
+})
+
+export const heroCaption = style({
+  color: vars.colors.textSubtle,
+  fontSize: vars.fontSize.sm,
+})
+
+export const chartPanel = style({
+  display: 'grid',
+  gap: vars.space.lg,
+  padding: vars.space.lg,
+  border: `1px solid ${vars.colors.border}`,
+  borderRadius: vars.radii.md,
+  background: vars.colors.surfaceElevated,
+})
+
+export const sectionHeader = style({
+  display: 'grid',
+  gap: vars.space.sm,
+
+  '@media': {
+    [`(min-width: ${breakpoints.tablet})`]: {
+      gridTemplateColumns: 'minmax(0, 1fr) auto',
+      alignItems: 'center',
+    },
+  },
+})
+
+export const sectionTitle = style({
+  margin: 0,
+  color: vars.colors.text,
+  fontSize: vars.fontSize.lg,
+})
+
+export const sectionSummary = style({
+  margin: 0,
   color: vars.colors.textMuted,
   fontSize: vars.fontSize.sm,
+  lineHeight: 1.5,
+})
+
+export const chartSummary = style({
+  display: 'grid',
+  gap: vars.space.xs,
+})
+
+export const chartSummaryLabel = style({
+  color: vars.colors.textSubtle,
+  fontSize: vars.fontSize.xs,
+  fontWeight: 700,
+  textTransform: 'uppercase',
+})
+
+export const chartSummaryValue = style({
+  color: vars.colors.text,
+  fontFamily: vars.font.mono,
+  fontSize: vars.fontSize.sm,
+  fontWeight: 700,
+})
+
+export const chartCanvas = style({
+  width: '100%',
+  height: '220px',
 })
 
 export const priceGrid = style({
@@ -65,7 +172,7 @@ export const priceGrid = style({
 
   '@media': {
     [`(min-width: ${breakpoints.tablet})`]: {
-      gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
     },
   },
 })
@@ -90,6 +197,13 @@ export const metricValue = style({
   color: vars.colors.text,
   fontSize: vars.fontSize.xl,
   fontWeight: 700,
+})
+
+export const metricValueSmall = style({
+  color: vars.colors.text,
+  fontSize: vars.fontSize.md,
+  fontWeight: 700,
+  lineHeight: 1.5,
 })
 
 export const positive = style({
@@ -140,6 +254,22 @@ export const selectedButton = style({
   borderColor: vars.colors.primary,
   background: vars.colors.primarySoft,
   color: vars.colors.primary,
+})
+
+export const aboutPanel = style({
+  display: 'grid',
+  gap: vars.space.md,
+  padding: vars.space.lg,
+  border: `1px solid ${vars.colors.border}`,
+  borderRadius: vars.radii.md,
+  background: vars.colors.surfaceElevated,
+})
+
+export const aboutCopy = style({
+  margin: 0,
+  color: vars.colors.textMuted,
+  fontSize: vars.fontSize.md,
+  lineHeight: 1.7,
 })
 
 export const status = style({
