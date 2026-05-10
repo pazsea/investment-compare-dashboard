@@ -37,6 +37,19 @@ describe('when validating FMP profile responses', () => {
     ).toBe(true)
   })
 
+  it('should accept nullable profile fields from FMP', () => {
+    expect(
+      isFmpProfileResponse({
+        symbol: 'NOBA.ST',
+        companyName: 'NOBA Bank Group AB',
+        exchange: 'STO',
+        state: null,
+        isEtf: false,
+        isFund: false,
+      }),
+    ).toBe(true)
+  })
+
   it('should reject malformed profile response items', () => {
     expect(isFmpProfileResponse({ symbol: 'AAPL', companyName: 12 })).toBe(false)
     expect(
