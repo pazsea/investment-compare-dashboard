@@ -13,16 +13,15 @@ import {
 } from '../../utils/instrumentPresentation'
 import { OPEN_GLOBAL_SEARCH_EVENT } from '../../utils/globalSearch'
 import { getInstrumentDetailsPath } from '../../utils/instrumentRoutes'
+import {
+  isSearchHistoryItem,
+  isSearchInteractionTarget,
+} from './globalSearchTypeguards'
+import type { SearchHistoryItem } from './globalSearchTypes'
 
 import * as styles from './GlobalSearch.css'
 
 export type Props = {}
-
-type SearchHistoryItem = {
-  name: string
-  symbol: string
-  type: Instrument['type']
-}
 
 const MIN_QUERY_LENGTH = 2
 const RECENT_SEARCHES_STORAGE_KEY = 'investmentCompareRecentSearches'
@@ -37,21 +36,7 @@ const readRecentSearches = (): SearchHistoryItem[] => {
     const storedSearches = window.localStorage.getItem(RECENT_SEARCHES_STORAGE_KEY)
     const parsedSearches: unknown = storedSearches ? JSON.parse(storedSearches) : []
 
-    return Array.isArray(parsedSearches)
-      ? parsedSearches.filter((item): item is SearchHistoryItem => {
-          if (!item || typeof item !== 'object') {
-            return false
-          }
-
-          const candidate = item as Partial<SearchHistoryItem>
-
-          return (
-            typeof candidate.symbol === 'string' &&
-            typeof candidate.name === 'string' &&
-            typeof candidate.type === 'string'
-          )
-        })
-      : []
+    return Array.isArray(parsedSearches) ? parsedSearches.filter(isSearchHistoryItem) : []
   } catch {
     return []
   }
@@ -132,7 +117,7 @@ const GlobalSearch: FC<Props> = () => {
 
   useEffect(() => {
     const handlePointerDown = (event: globalThis.MouseEvent) => {
-      if (!shellRef.current?.contains(event.target as Node)) {
+      if (!isSearchInteractionTarget(event.target) || !shellRef.current?.contains(event.target)) {
         setIsOpen(false)
       }
     }

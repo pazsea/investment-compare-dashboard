@@ -1,18 +1,15 @@
-import type { Instrument, InstrumentType } from '../types/instrument'
-
-const instrumentTypes = new Set<InstrumentType>(['stock', 'fund', 'crypto', 'etf'])
+import type { Instrument } from '../types/instrument'
+import { isRecord } from './sharedTypeguards'
+import { isInstrumentType } from './typeguards'
 
 export const isStoredInstrument = (value: unknown): value is Instrument => {
-  if (!value || typeof value !== 'object') {
+  if (!isRecord(value)) {
     return false
   }
 
-  const instrument = value as Partial<Instrument>
-
   return (
-    typeof instrument.symbol === 'string' &&
-    typeof instrument.name === 'string' &&
-    typeof instrument.type === 'string' &&
-    instrumentTypes.has(instrument.type as InstrumentType)
+    typeof value.symbol === 'string' &&
+    typeof value.name === 'string' &&
+    isInstrumentType(value.type)
   )
 }

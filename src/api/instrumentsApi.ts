@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 import { FMP_API_KEY, FMP_BASE_URL, shouldUseFmpApi } from './config'
 import { parseFmpQuoteResponse, parseFmpSearchResponse } from './fmpGuards'
@@ -28,7 +27,7 @@ const getFallbackQuote = (symbol: string) => ({ data: findMockQuote(symbol) })
 
 export const instrumentsApi = createApi({
   reducerPath: 'instrumentsApi',
-  baseQuery: baseQuery as BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
+  baseQuery,
   endpoints: (builder) => ({
     searchInstruments: builder.query<Instrument[], string>({
       async queryFn(query, _api, _extraOptions, fetchWithBaseQuery) {

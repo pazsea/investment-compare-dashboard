@@ -1,6 +1,7 @@
 import type { FC } from 'react'
 import { Link } from 'react-router-dom'
 
+import DashboardPreviewPanel from './DashboardPreviewPanel'
 import { mockInstruments } from '../../mocks/instruments'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import { useWatchlist } from '../../hooks/useWatchlist'
@@ -33,35 +34,20 @@ const DashboardPage: FC = () => {
   const comparePreview = selectedInstruments.slice(0, 3)
   const watchlistPreview = watchlistInstruments.slice(0, 3)
 
-  const renderPreviewItem = (instrument: Instrument) => {
-    return (
-      <li className={styles.item} key={instrument.symbol}>
-        <Link
-          className={styles.itemLink}
-          to={getInstrumentDetailsPath(instrument.symbol)}
-          state={{ instrument }}
-        >
-          {instrument.name}
-        </Link>
-        {renderInstrumentMeta(instrument)}
-      </li>
-    )
-  }
-
-  const renderPopularInstrument = (instrument: Instrument) => {
-    return (
-      <article className={styles.item} key={instrument.symbol}>
-        <Link
-          className={styles.itemLink}
-          to={getInstrumentDetailsPath(instrument.symbol)}
-          state={{ instrument }}
-        >
-          {instrument.name}
-        </Link>
-        {renderInstrumentMeta(instrument)}
-      </article>
-    )
-  }
+const renderPopularInstrument = (instrument: Instrument) => {
+  return (
+    <article className={styles.item} key={instrument.symbol}>
+      <Link
+        className={styles.itemLink}
+        to={getInstrumentDetailsPath(instrument.symbol)}
+        state={{ instrument }}
+      >
+        {instrument.name}
+      </Link>
+      {renderInstrumentMeta(instrument)}
+    </article>
+  )
+}
 
   return (
     <main className={styles.page}>
@@ -83,35 +69,18 @@ const DashboardPage: FC = () => {
         </section>
 
         <section className={styles.grid} aria-label="Översikt">
-          <article className={styles.panel}>
-            <div className={styles.panelHeader}>
-              <h2 className={styles.panelTitle}>Jämförelse</h2>
-              <Link className={styles.panelLink} to="/compare">
-                Öppna
-              </Link>
-            </div>
-            {comparePreview.length === 0 && (
-              <p className={styles.emptyText}>Inga instrument har lagts till för jämförelse ännu.</p>
-            )}
-            {comparePreview.length > 0 && (
-              <ul className={styles.list}>{comparePreview.map(renderPreviewItem)}</ul>
-            )}
-          </article>
-
-          <article className={styles.panel}>
-            <div className={styles.panelHeader}>
-              <h2 className={styles.panelTitle}>Bevakningslista</h2>
-              <Link className={styles.panelLink} to="/watchlist">
-                Öppna
-              </Link>
-            </div>
-            {watchlistPreview.length === 0 && (
-              <p className={styles.emptyText}>Din bevakningslista är redo för instrument du vill följa.</p>
-            )}
-            {watchlistPreview.length > 0 && (
-              <ul className={styles.list}>{watchlistPreview.map(renderPreviewItem)}</ul>
-            )}
-          </article>
+          <DashboardPreviewPanel
+            emptyMessage="Inga instrument har lagts till för jämförelse ännu."
+            instruments={comparePreview}
+            title="Jämförelse"
+            to="/compare"
+          />
+          <DashboardPreviewPanel
+            emptyMessage="Din bevakningslista är redo för instrument du vill följa."
+            instruments={watchlistPreview}
+            title="Bevakningslista"
+            to="/watchlist"
+          />
         </section>
 
         <section className={styles.popularSection} aria-labelledby="popular-instruments-heading">

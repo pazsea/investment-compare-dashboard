@@ -14,6 +14,7 @@ import { findMockInstrument } from '../../mocks/instruments'
 import { vars } from '../../styles/theme.css'
 import type { Instrument, InstrumentQuote } from '../../types/instrument'
 import { getExchangeLabel, getInstrumentTypeLabel } from '../../utils/instrumentPresentation'
+import { isDetailsLocationState } from './detailsTypeguards'
 import {
   getDetailsSeries,
   getInstrumentFocus,
@@ -22,10 +23,6 @@ import {
 } from './detailsPerformance'
 
 import * as styles from './InstrumentDetailsPage.css'
-
-type LocationState = {
-  instrument?: Instrument
-}
 
 const inferInstrumentType = (symbol: string, name: string): Instrument['type'] => {
   const normalizedSymbol = symbol.toUpperCase()
@@ -93,7 +90,7 @@ const formatChange = (quote: InstrumentQuote) => {
 const InstrumentDetailsPage: FC = () => {
   const params = useParams<{ symbol: string }>()
   const location = useLocation()
-  const locationState = location.state as LocationState | null
+  const locationState = isDetailsLocationState(location.state) ? location.state : undefined
   const symbol = params.symbol?.trim().toUpperCase() ?? ''
   const { data: quote, isError, isFetching } = useGetInstrumentQuoteQuery(symbol, {
     skip: !symbol,

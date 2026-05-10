@@ -1,8 +1,5 @@
 import type { FmpQuoteResponse, FmpSearchInstrumentResponse } from './fmpTypes'
-
-const isRecord = (value: unknown): value is Record<string, unknown> => {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
-}
+import { isRecord } from '../utils/sharedTypeguards'
 
 const isOptionalString = (value: unknown) => {
   return value === undefined || typeof value === 'string'

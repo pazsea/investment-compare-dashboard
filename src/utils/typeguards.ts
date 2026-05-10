@@ -3,8 +3,11 @@ import type {
   EtfInstrument,
   FundInstrument,
   Instrument,
+  InstrumentType,
   StockInstrument,
 } from '../types/instrument'
+
+const instrumentTypes = new Set<string>(['stock', 'fund', 'crypto', 'etf'])
 
 export const isStockInstrument = (instrument: Instrument): instrument is StockInstrument =>
   instrument.type === 'stock'
@@ -17,3 +20,6 @@ export const isCryptoInstrument = (instrument: Instrument): instrument is Crypto
 
 export const isEtfInstrument = (instrument: Instrument): instrument is EtfInstrument =>
   instrument.type === 'etf'
+
+export const isInstrumentType = (value: unknown): value is InstrumentType =>
+  typeof value === 'string' && instrumentTypes.has(value)
