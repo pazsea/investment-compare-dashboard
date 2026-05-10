@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import type { MouseEvent } from 'react'
+import type { ChangeEvent, MouseEvent } from 'react'
 import clsx from 'clsx'
 import {
   Line,
@@ -56,9 +56,18 @@ const renderExchangeCell = (instrument: Instrument) => {
   return instrument.exchange ?? 'Unavailable'
 }
 
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('en-US', {
+    currency: 'USD',
+    maximumFractionDigits: 0,
+    style: 'currency',
+  }).format(value)
+}
+
 const ComparePage: React.FC = () => {
   const { clearCompare, removeFromCompare, selectedInstruments } = useCompareSelection()
   const [range, setRange] = useState<CompareRange>('1M')
+  const [investmentAmount, setInvestmentAmount] = useState('10000')
   const selectedCount = selectedInstruments.length
   const countLabel = selectedCount === 1 ? 'instrument' : 'instruments'
   const chartData = useMemo(() => {
@@ -73,9 +82,29 @@ const ComparePage: React.FC = () => {
       values: getCompareMetrics(instrument, range),
     }))
   }, [range, selectedInstruments])
+  const normalizedAmount = Number.parseInt(investmentAmount, 10)
+  const startingAmount = Number.isFinite(normalizedAmount) && normalizedAmount > 0 ? normalizedAmount : 10000
+  const scenarios = useMemo(() => {
+    return metrics.map((entry) => {
+      const endingValue = startingAmount * (1 + entry.values.returnPercent / 100)
+      const gainLoss = endingValue - startingAmount
+
+      return {
+        ...entry,
+        endingValue,
+        gainLoss,
+      }
+    })
+  }, [metrics, startingAmount])
 
   const handleClearCompare = () => {
     clearCompare()
+  }
+
+  const handleAmountChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.currentTarget.value.replace(/[^\d]/g, '')
+
+    setInvestmentAmount(nextValue)
   }
 
   const handleRangeChange = (event: MouseEvent<HTMLButtonElement>) => {
@@ -168,6 +197,37 @@ const ComparePage: React.FC = () => {
           <div>
             <dt className={styles.statLabel}>Volume</dt>
             <dd className={styles.statValue}>{entry.values.volume.toLocaleString()}</dd>
+          </div>
+        </dl>
+      </article>
+    )
+  }
+
+  const renderScenarioCard = (entry: (typeof scenarios)[number]) => {
+    const gainLossClassName = entry.gainLoss >= 0 ? styles.positiveStat : styles.negativeStat
+    const gainLossPrefix = entry.gainLoss >= 0 ? '+' : ''
+
+    return (
+      <article className={styles.scenarioCard} key={`scenario-${entry.instrument.symbol}`}>
+        <header className={styles.metricHeader}>
+          <span className={styles.metricSymbol}>{entry.instrument.symbol}</span>
+          <h3 className={styles.metricName}>{entry.instrument.name}</h3>
+        </header>
+        <dl className={styles.scenarioGrid}>
+          <div>
+            <dt className={styles.statLabel}>Starting value</dt>
+            <dd className={styles.statValue}>{formatCurrency(startingAmount)}</dd>
+          </div>
+          <div>
+            <dt className={styles.statLabel}>Ending value</dt>
+            <dd className={styles.statValue}>{formatCurrency(entry.endingValue)}</dd>
+          </div>
+          <div>
+            <dt className={styles.statLabel}>Gain / loss</dt>
+            <dd className={clsx(styles.statValue, gainLossClassName)}>
+              {gainLossPrefix}
+              {formatCurrency(Math.abs(entry.gainLoss))}
+            </dd>
           </div>
         </dl>
       </article>
@@ -295,6 +355,31 @@ const ComparePage: React.FC = () => {
 
               <section className={styles.metricsGrid} aria-label="Compare metrics">
                 {metrics.map(renderMetricCard)}
+              </section>
+
+              <section className={styles.scenarioSection} aria-labelledby="compare-scenario-heading">
+                <div className={styles.chartHeader}>
+                  <div>
+                    <h3 className={styles.chartTitle} id="compare-scenario-heading">
+                      If you invested
+                    </h3>
+                    <p className={styles.chartSummary}>
+                      A quick scenario view that turns relative performance into a portfolio-style outcome.
+                    </p>
+                  </div>
+                  <label className={styles.amountField}>
+                    <span className={styles.amountLabel}>Starting amount</span>
+                    <input
+                      className={styles.amountInput}
+                      type="text"
+                      inputMode="numeric"
+                      aria-label="Starting investment amount"
+                      value={investmentAmount}
+                      onChange={handleAmountChange}
+                    />
+                  </label>
+                </div>
+                <div className={styles.scenarioCards}>{scenarios.map(renderScenarioCard)}</div>
               </section>
 
               <div className={styles.mobileList}>{selectedInstruments.map(renderMobileCard)}</div>
