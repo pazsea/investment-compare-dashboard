@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css'
 
-import { vars } from '../../styles/theme.css'
+import { breakpoints, vars } from '../../styles/theme.css'
 
 export const card = style({
   display: 'flex',
@@ -66,10 +66,10 @@ export const actions = style({
   gap: vars.space.sm,
 
   '@media': {
-    '(min-width: 480px)': {
+    [`(min-width: ${breakpoints.mobile})`]: {
       gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
     },
-    '(min-width: 768px)': {
+    [`(min-width: ${breakpoints.tablet})`]: {
       gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
     },
   },

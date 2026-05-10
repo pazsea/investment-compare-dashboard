@@ -114,6 +114,7 @@ export const actions = style({
 
 export const button = style({
   minHeight: '44px',
+  width: '100%',
   border: `1px solid ${vars.colors.border}`,
   borderRadius: vars.radii.sm,
   background: vars.colors.surfaceElevated,
@@ -126,6 +127,12 @@ export const button = style({
   ':disabled': {
     color: vars.colors.textMuted,
     cursor: 'not-allowed',
+  },
+
+  '@media': {
+    [`(min-width: ${breakpoints.mobile})`]: {
+      width: 'auto',
+    },
   },
 })
 

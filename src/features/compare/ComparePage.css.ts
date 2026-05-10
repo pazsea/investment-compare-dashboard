@@ -45,11 +45,15 @@ export const summary = style({
 })
 
 export const toolbar = style({
-  display: 'flex',
-  flexWrap: 'wrap',
-  alignItems: 'center',
-  justifyContent: 'space-between',
+  display: 'grid',
   gap: vars.space.md,
+
+  '@media': {
+    [`(min-width: ${breakpoints.tablet})`]: {
+      gridTemplateColumns: '1fr auto auto',
+      alignItems: 'center',
+    },
+  },
 })
 
 export const count = style({
@@ -59,6 +63,7 @@ export const count = style({
 
 export const button = style({
   minHeight: '44px',
+  width: '100%',
   border: `1px solid ${vars.colors.border}`,
   borderRadius: vars.radii.sm,
   background: vars.colors.surface,
@@ -71,6 +76,12 @@ export const button = style({
   ':disabled': {
     color: vars.colors.textMuted,
     cursor: 'not-allowed',
+  },
+
+  '@media': {
+    [`(min-width: ${breakpoints.tablet})`]: {
+      width: 'auto',
+    },
   },
 })
 
@@ -122,10 +133,15 @@ export const card = style({
 })
 
 export const cardHeader = style({
-  display: 'flex',
-  alignItems: 'flex-start',
-  justifyContent: 'space-between',
+  display: 'grid',
   gap: vars.space.md,
+
+  '@media': {
+    [`(min-width: ${breakpoints.mobile})`]: {
+      gridTemplateColumns: 'minmax(0, 1fr) auto',
+      alignItems: 'start',
+    },
+  },
 })
 
 export const instrumentName = style({
@@ -144,8 +160,13 @@ export const symbol = style({
 
 export const detailGrid = style({
   display: 'grid',
-  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
   gap: vars.space.md,
+
+  '@media': {
+    [`(min-width: ${breakpoints.mobile})`]: {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+  },
 })
 
 export const detailLabel = style({

@@ -12,6 +12,7 @@ export const header = style({
   zIndex: 1,
   borderBottom: `1px solid ${vars.colors.border}`,
   background: vars.colors.surface,
+  boxShadow: vars.shadow.sm,
 })
 
 export const nav = style({
@@ -38,25 +39,40 @@ export const brand = style({
 })
 
 export const links = style({
-  display: 'flex',
-  flexWrap: 'wrap',
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
   gap: vars.space.sm,
+
+  '@media': {
+    [`(min-width: ${breakpoints.tablet})`]: {
+      display: 'flex',
+      flexWrap: 'wrap',
+    },
+  },
 })
 
 export const link = style({
   minHeight: '44px',
   display: 'inline-flex',
   alignItems: 'center',
+  justifyContent: 'center',
   borderRadius: vars.radii.sm,
   color: vars.colors.textMuted,
   fontSize: vars.fontSize.sm,
   fontWeight: 700,
   padding: `${vars.space.sm} ${vars.space.md}`,
   textDecoration: 'none',
+
+  '@media': {
+    [`(min-width: ${breakpoints.tablet})`]: {
+      justifyContent: 'flex-start',
+    },
+  },
 })
 
 export const themeButton = style({
   minHeight: '44px',
+  width: '100%',
   border: `1px solid ${vars.colors.border}`,
   borderRadius: vars.radii.sm,
   background: vars.colors.surfaceElevated,
@@ -65,4 +81,10 @@ export const themeButton = style({
   fontSize: vars.fontSize.sm,
   fontWeight: 700,
   padding: `${vars.space.sm} ${vars.space.lg}`,
+
+  '@media': {
+    [`(min-width: ${breakpoints.tablet})`]: {
+      width: 'auto',
+    },
+  },
 })
