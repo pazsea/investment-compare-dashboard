@@ -7,6 +7,7 @@ import { useWatchlist } from '../../hooks/useWatchlist'
 import type { Instrument } from '../../types/instrument'
 import { getExchangeLabel, getInstrumentTypeLabel } from '../../utils/instrumentPresentation'
 import { openGlobalSearch } from '../../utils/globalSearch'
+import { getInstrumentDetailsPath } from '../../utils/instrumentRoutes'
 
 import * as styles from './DashboardPage.css'
 
@@ -37,7 +38,7 @@ const DashboardPage: FC = () => {
       <li className={styles.item} key={instrument.symbol}>
         <Link
           className={styles.itemLink}
-          to={`/instrument/${encodeURIComponent(instrument.symbol)}`}
+          to={getInstrumentDetailsPath(instrument.symbol)}
           state={{ instrument }}
         >
           {instrument.name}
@@ -52,7 +53,7 @@ const DashboardPage: FC = () => {
       <article className={styles.item} key={instrument.symbol}>
         <Link
           className={styles.itemLink}
-          to={`/instrument/${encodeURIComponent(instrument.symbol)}`}
+          to={getInstrumentDetailsPath(instrument.symbol)}
           state={{ instrument }}
         >
           {instrument.name}

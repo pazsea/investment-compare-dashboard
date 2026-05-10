@@ -1,4 +1,5 @@
 import type { Instrument, InstrumentQuote } from '../../types/instrument'
+import { getInstrumentDetailsPath } from '../../utils/instrumentRoutes'
 
 export const formatWatchlistPrice = (quote?: InstrumentQuote) => {
   if (!quote) {
@@ -43,6 +44,4 @@ export const getInstrumentFocusLabel = (instrument: Instrument) => {
   return 'Bred exponering'
 }
 
-export const getInstrumentDetailsPath = (symbol: string) => {
-  return `/instrument/${encodeURIComponent(symbol)}`
-}
+export { getInstrumentDetailsPath }

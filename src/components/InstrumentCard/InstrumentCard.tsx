@@ -11,15 +11,12 @@ import {
   getExchangeLabel,
   getInstrumentTypeLabel,
 } from '../../utils/instrumentPresentation'
+import { getInstrumentDetailsPath } from '../../utils/instrumentRoutes'
 
 import * as styles from './InstrumentCard.css'
 
 export type Props = {
   instrument: Instrument
-}
-
-const getInstrumentDetailsPath = (symbol: string) => {
-  return `/instrument/${encodeURIComponent(symbol)}`
 }
 
 const InstrumentCard: FC<Props> = (props) => {

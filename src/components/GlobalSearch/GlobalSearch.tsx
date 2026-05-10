@@ -12,6 +12,7 @@ import {
   getInstrumentTypeLabel,
 } from '../../utils/instrumentPresentation'
 import { OPEN_GLOBAL_SEARCH_EVENT } from '../../utils/globalSearch'
+import { getInstrumentDetailsPath } from '../../utils/instrumentRoutes'
 
 import * as styles from './GlobalSearch.css'
 
@@ -165,7 +166,7 @@ const GlobalSearch: FC<Props> = () => {
       saveRecentSearch(instrument)
       setIsOpen(false)
       setQuery('')
-      navigate(`/instrument/${encodeURIComponent(instrument.symbol)}`, {
+      navigate(getInstrumentDetailsPath(instrument.symbol), {
         state: { instrument },
       })
     },
