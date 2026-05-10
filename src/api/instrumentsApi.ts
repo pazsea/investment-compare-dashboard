@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
-import { FMP_API_KEY, FMP_BASE_URL, hasFmpApiKey } from './config'
+import { FMP_API_KEY, FMP_BASE_URL, shouldUseFmpApi } from './config'
 import { findMockQuote, searchMockInstruments } from '../mocks/instruments'
 import type { Instrument, InstrumentQuote } from '../types/instrument'
 
@@ -101,7 +101,7 @@ export const instrumentsApi = createApi({
           return { data: [] }
         }
 
-        if (!hasFmpApiKey) {
+        if (!shouldUseFmpApi) {
           return getFallbackSearch(normalizedQuery)
         }
 
@@ -133,7 +133,7 @@ export const instrumentsApi = createApi({
           return { data: undefined }
         }
 
-        if (!hasFmpApiKey) {
+        if (!shouldUseFmpApi) {
           return getFallbackQuote(normalizedSymbol)
         }
 
