@@ -56,6 +56,11 @@ export const toolbar = style({
   },
 })
 
+export const compareContent = style({
+  display: 'grid',
+  gap: vars.space.xl,
+})
+
 export const count = style({
   color: vars.colors.textMuted,
   fontSize: vars.fontSize.sm,
@@ -120,6 +125,145 @@ export const desktopTable = style({
       display: 'block',
     },
   },
+})
+
+export const chartSection = style({
+  display: 'grid',
+  gap: vars.space.lg,
+  padding: vars.space.lg,
+  border: `1px solid ${vars.colors.border}`,
+  borderRadius: vars.radii.md,
+  background: vars.colors.surface,
+  boxShadow: vars.shadow.sm,
+})
+
+export const chartHeader = style({
+  display: 'grid',
+  gap: vars.space.md,
+
+  '@media': {
+    [`(min-width: ${breakpoints.tablet})`]: {
+      gridTemplateColumns: '1fr auto',
+      alignItems: 'center',
+    },
+  },
+})
+
+export const chartTitle = style({
+  margin: 0,
+  color: vars.colors.text,
+  fontSize: vars.fontSize.lg,
+})
+
+export const chartSummary = style({
+  margin: 0,
+  color: vars.colors.textMuted,
+  fontSize: vars.fontSize.sm,
+  lineHeight: 1.5,
+})
+
+export const rangeControls = style({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+  gap: vars.space.xs,
+})
+
+export const rangeButton = style({
+  minHeight: '40px',
+  border: `1px solid ${vars.colors.border}`,
+  borderRadius: vars.radii.sm,
+  background: vars.colors.surfaceElevated,
+  color: vars.colors.textMuted,
+  cursor: 'pointer',
+  fontSize: vars.fontSize.xs,
+  fontWeight: 700,
+  padding: `${vars.space.xs} ${vars.space.sm}`,
+})
+
+export const activeRangeButton = style({
+  borderColor: vars.colors.primary,
+  background: vars.colors.primarySoft,
+  color: vars.colors.primary,
+})
+
+export const chartViewport = style({
+  overflowX: 'auto',
+})
+
+export const chartCanvas = style({
+  minWidth: '640px',
+  height: '280px',
+})
+
+export const metricsGrid = style({
+  display: 'grid',
+  gap: vars.space.lg,
+
+  '@media': {
+    [`(min-width: ${breakpoints.tablet})`]: {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+    [`(min-width: ${breakpoints.desktop})`]: {
+      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+    },
+  },
+})
+
+export const metricCard = style({
+  display: 'grid',
+  gap: vars.space.md,
+  padding: vars.space.lg,
+  border: `1px solid ${vars.colors.border}`,
+  borderRadius: vars.radii.md,
+  background: vars.colors.surface,
+  boxShadow: vars.shadow.sm,
+})
+
+export const metricHeader = style({
+  display: 'grid',
+  gap: vars.space.xs,
+})
+
+export const metricSymbol = style({
+  color: vars.colors.primary,
+  fontFamily: vars.font.mono,
+  fontSize: vars.fontSize.xs,
+  fontWeight: 700,
+})
+
+export const metricName = style({
+  margin: 0,
+  color: vars.colors.text,
+  fontSize: vars.fontSize.md,
+})
+
+export const statGrid = style({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+  gap: vars.space.md,
+})
+
+export const statLabel = style({
+  display: 'block',
+  color: vars.colors.textSubtle,
+  fontSize: vars.fontSize.xs,
+  fontWeight: 700,
+  textTransform: 'uppercase',
+})
+
+export const statValue = style({
+  color: vars.colors.text,
+  fontSize: vars.fontSize.sm,
+})
+
+export const positiveStat = style({
+  color: vars.colors.positive,
+  fontWeight: 700,
+})
+
+export const negativeStat = style({
+  color: vars.colors.negative,
+  fontWeight: 700,
 })
 
 export const card = style({
