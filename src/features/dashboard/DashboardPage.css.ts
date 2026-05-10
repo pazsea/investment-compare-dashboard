@@ -91,8 +91,8 @@ export const grid = style({
   gap: vars.space.lg,
 
   '@media': {
-    [`(min-width: ${breakpoints.desktop})`]: {
-      gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+    [`(min-width: ${breakpoints.tablet})`]: {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
     },
   },
 })

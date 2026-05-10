@@ -346,9 +346,15 @@ const ComparePage: React.FC = () => {
                 <div className={styles.chartViewport}>
                   <div className={styles.chartCanvas}>
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={chartData} margin={{ top: 8, right: 8, left: -24, bottom: 8 }}>
+                      <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
                         <XAxis dataKey="label" tickLine={false} axisLine={false} />
-                        <YAxis tickLine={false} axisLine={false} domain={['dataMin - 4', 'dataMax + 4']} />
+                        <YAxis
+                          tickLine={false}
+                          axisLine={false}
+                          width={48}
+                          tickFormatter={(value) => String(Math.round(Number(value)))}
+                          domain={['dataMin - 4', 'dataMax + 4']}
+                        />
                         <Tooltip />
                         {selectedInstruments.map(renderChartLine)}
                       </LineChart>
