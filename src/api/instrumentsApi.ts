@@ -2,44 +2,16 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 import { FMP_API_KEY, FMP_BASE_URL, shouldUseFmpApi } from './config'
+import { parseFmpQuoteResponse, parseFmpSearchResponse } from './fmpGuards'
+import {
+  isInstrument,
+  isInstrumentQuote,
+  mapQuoteToInstrumentQuote,
+  mapSearchResultToInstrument,
+} from './fmpMappers'
+import { mergeSearchResults } from './fmpUtils'
 import { findMockQuote, searchMockInstruments } from '../mocks/instruments'
 import type { Instrument, InstrumentQuote } from '../types/instrument'
-
-export type FmpSearchInstrumentResponse = {
-  symbol?: string
-  name?: string
-  currency?: string
-  exchange?: string
-  exchangeFullName?: string
-  stockExchange?: string
-}
-
-export type FmpQuoteResponse = {
-  symbol?: string
-  name?: string
-  price?: number
-  change?: number
-  changePercentage?: number
-  changesPercentage?: number
-  currency?: string
-  exchange?: string
-}
-
-const mergeSearchResults = (
-  firstResults: FmpSearchInstrumentResponse[],
-  secondResults: FmpSearchInstrumentResponse[],
-) => {
-  const mergedResults = [...firstResults, ...secondResults]
-  const uniqueResults = new Map<string, FmpSearchInstrumentResponse>()
-
-  mergedResults.forEach((result) => {
-    if (result.symbol) {
-      uniqueResults.set(result.symbol, result)
-    }
-  })
-
-  return Array.from(uniqueResults.values())
-}
 
 const baseQuery = fetchBaseQuery({
   baseUrl: FMP_BASE_URL,
@@ -49,57 +21,6 @@ const withApiKey = (params: Record<string, string>) => ({
   ...params,
   apikey: FMP_API_KEY,
 })
-
-const mapSearchResultToInstrument = (result: FmpSearchInstrumentResponse): Instrument | undefined => {
-  if (!result.symbol || !result.name) {
-    return undefined
-  }
-
-  const exchange = result.exchange ?? result.exchangeFullName ?? result.stockExchange
-
-  return {
-    type: inferInstrumentType(result.symbol, result.name),
-    symbol: result.symbol,
-    name: result.name,
-    currency: result.currency,
-    exchange,
-  }
-}
-
-const mapQuoteToInstrumentQuote = (quote: FmpQuoteResponse): InstrumentQuote | undefined => {
-  if (!quote.symbol || !quote.name || quote.price === undefined) {
-    return undefined
-  }
-
-  return {
-    symbol: quote.symbol,
-    name: quote.name,
-    price: quote.price,
-    change: quote.change ?? 0,
-    changesPercentage: quote.changesPercentage ?? quote.changePercentage ?? 0,
-    currency: quote.currency,
-    exchange: quote.exchange,
-  }
-}
-
-const inferInstrumentType = (symbol: string, name: string): Instrument['type'] => {
-  const normalizedSymbol = symbol.toUpperCase()
-  const normalizedName = name.toLowerCase()
-
-  if (normalizedSymbol.endsWith('USD') && !normalizedSymbol.includes('.')) {
-    return 'crypto'
-  }
-
-  if (normalizedName.includes(' etf') || normalizedName.includes('exchange traded fund')) {
-    return 'etf'
-  }
-
-  if (normalizedName.includes('fund')) {
-    return 'fund'
-  }
-
-  return 'stock'
-}
 
 const getFallbackSearch = (query: string) => ({ data: searchMockInstruments(query) })
 
@@ -134,18 +55,12 @@ export const instrumentsApi = createApi({
           return getFallbackSearch(normalizedQuery)
         }
 
-        const symbolResults = Array.isArray(result.data)
-          ? (result.data as FmpSearchInstrumentResponse[])
-          : []
-        const nameResults = Array.isArray(nameResult.data)
-          ? (nameResult.data as FmpSearchInstrumentResponse[])
-          : []
+        const symbolResults = parseFmpSearchResponse(result.data)
+        const nameResults = parseFmpSearchResponse(nameResult.data)
         const rawResults = mergeSearchResults(symbolResults, nameResults)
 
         return {
-          data: rawResults
-            .map(mapSearchResultToInstrument)
-            .filter((instrument): instrument is Instrument => Boolean(instrument)),
+          data: rawResults.map(mapSearchResultToInstrument).filter(isInstrument),
         }
       },
     }),
@@ -170,10 +85,10 @@ export const instrumentsApi = createApi({
           return getFallbackQuote(normalizedSymbol)
         }
 
-        const rawQuotes = Array.isArray(result.data) ? (result.data as FmpQuoteResponse[]) : []
+        const rawQuotes = parseFmpQuoteResponse(result.data)
 
         return {
-          data: rawQuotes.map(mapQuoteToInstrumentQuote).find(Boolean),
+          data: rawQuotes.map(mapQuoteToInstrumentQuote).find(isInstrumentQuote),
         }
       },
     }),
