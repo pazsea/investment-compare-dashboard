@@ -2,7 +2,7 @@
 
 Investment Compare Dashboard is a polished React + TypeScript fintech demo app built for interview review. It behaves like a lightweight investment workspace where users can search instruments, save them to a watchlist, select them for comparison, inspect details, and switch between light and dark themes.
 
-The project is intentionally frontend-focused. It demonstrates clean state boundaries, typed API mapping, responsive UI, accessibility-minded interactions, and a safe mock-first API strategy.
+The project is intentionally frontend-focused. It demonstrates clean state boundaries, typed API mapping, responsive UI.
 
 ## Tech Stack
 
@@ -24,8 +24,6 @@ The project is intentionally frontend-focused. It demonstrates clean state bound
 - Responsive compare page with mobile cards and desktop table
 - Watchlist state with localStorage persistence
 - Light/dark theme switcher with persisted preference
-- Shared loading, error, and empty state components
-- Domain types, typeguards, custom hooks, and a generic `DataTable<T>`
 
 ## API Strategy
 
@@ -41,8 +39,6 @@ Real API calls are opt-in. By default, `VITE_USE_FMP_API=false`, so local develo
 The API layer keeps raw response types separate from domain models and maps FMP responses into app-level `Instrument` and `InstrumentQuote` types.
 
 ## Architecture
-
-The codebase uses feature-based organization:
 
 ```txt
 src/
@@ -112,7 +108,3 @@ Run lint:
 ```bash
 npm run lint
 ```
-
-## What This Demonstrates
-
-This project is designed to show practical frontend engineering judgment: typed React code, RTK Query data flows, accessible responsive UI, theme architecture, generic components, typeguards, custom hooks, deterministic mocks, and incremental test coverage without overengineering the app.
