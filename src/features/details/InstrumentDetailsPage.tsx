@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 
 import { useGetInstrumentProfileQuery } from '../../api/instrumentsApi'
+import { ExpandableText } from '../../components/ExpandableText'
 import { inferInstrumentType } from '../../api/fmpMappers'
 import { EmptyState } from '../../components/EmptyState'
 import { ErrorState } from '../../components/ErrorState'
@@ -90,6 +91,7 @@ const InstrumentDetailsPage: FC = () => {
   const { data: profile, isError, isFetching } = useGetInstrumentProfileQuery(symbol, {
     skip: !symbol,
   })
+  console.log('Fetched profile:', profile)
   const profileInstrument = profile ? createInstrumentFromProfile(profile) : undefined
   const instrument = routeInstrument ?? profileInstrument
   const { addToCompare, canAddToCompare, isInCompare, removeFromCompare } = useCompareSelection()
@@ -111,6 +113,7 @@ const InstrumentDetailsPage: FC = () => {
   const isCompareDisabled = !isSelectedForCompare && !canAddToCompare
   const focus = instrument ? getInstrumentFocus(instrument) : undefined
   const narrative = instrument ? getInstrumentNarrative(instrument) : undefined
+  const aboutText = profile?.description ?? narrative ?? ''
   const series = profile?.price !== undefined ? getDetailsSeries(profile) : []
   const trendLabel = profile ? getTrendLabel(profile) : undefined
   const showErrorState = isError && !instrument
@@ -291,7 +294,7 @@ const InstrumentDetailsPage: FC = () => {
               </div>
               <div className={styles.aboutLayout}>
                 <div className={styles.profileMeta}>
-                  <p className={styles.aboutCopy}>{profile?.description ?? narrative}</p>
+                  <ExpandableText text={aboutText} />
                   {profile && (
                     <div className={styles.profileGrid}>
                       {profile.ceo && (

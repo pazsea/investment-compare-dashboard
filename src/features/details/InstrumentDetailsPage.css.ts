@@ -294,13 +294,6 @@ export const aboutLayout = style({
   },
 })
 
-export const aboutCopy = style({
-  margin: 0,
-  color: vars.colors.textMuted,
-  fontSize: vars.fontSize.md,
-  lineHeight: 1.7,
-})
-
 export const profileMeta = style({
   display: 'grid',
   gap: vars.space.md,
