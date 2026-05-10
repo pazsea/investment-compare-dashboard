@@ -1,29 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
-import type { Instrument, InstrumentType } from '../../types/instrument'
+import type { Instrument } from '../../types/instrument'
+import { isStoredInstrument } from '../../utils/storedInstrument'
 
 export const WATCHLIST_STORAGE_KEY = 'investmentCompareWatchlist'
 
 type WatchlistState = {
   instruments: Instrument[]
-}
-
-const instrumentTypes = new Set<InstrumentType>(['stock', 'fund', 'crypto', 'etf'])
-
-const isStoredInstrument = (value: unknown): value is Instrument => {
-  if (!value || typeof value !== 'object') {
-    return false
-  }
-
-  const instrument = value as Partial<Instrument>
-
-  return (
-    typeof instrument.symbol === 'string' &&
-    typeof instrument.name === 'string' &&
-    typeof instrument.type === 'string' &&
-    instrumentTypes.has(instrument.type as InstrumentType)
-  )
 }
 
 const readStoredWatchlist = (): Instrument[] => {
