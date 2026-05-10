@@ -1,10 +1,12 @@
 import type { FC } from 'react'
 import { Link } from 'react-router-dom'
 
+import { shouldUseFmpApi } from '../../api/config'
 import { mockInstruments } from '../../mocks/instruments'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import { useWatchlist } from '../../hooks/useWatchlist'
 import type { Instrument } from '../../types/instrument'
+import { openGlobalSearch } from '../../utils/globalSearch'
 
 import * as styles from './DashboardPage.css'
 
@@ -20,6 +22,10 @@ const renderInstrumentMeta = (instrument: Instrument) => {
   )
 }
 
+const handleOpenSearch = () => {
+  openGlobalSearch()
+}
+
 const DashboardPage: FC = () => {
   const { selectedInstruments } = useCompareSelection()
   const { instruments: watchlistInstruments } = useWatchlist()
@@ -29,7 +35,11 @@ const DashboardPage: FC = () => {
   const renderPreviewItem = (instrument: Instrument) => {
     return (
       <li className={styles.item} key={instrument.symbol}>
-        <Link className={styles.itemLink} to={`/instrument/${encodeURIComponent(instrument.symbol)}`}>
+        <Link
+          className={styles.itemLink}
+          to={`/instrument/${encodeURIComponent(instrument.symbol)}`}
+          state={{ instrument }}
+        >
           {instrument.name}
         </Link>
         {renderInstrumentMeta(instrument)}
@@ -40,7 +50,11 @@ const DashboardPage: FC = () => {
   const renderPopularInstrument = (instrument: Instrument) => {
     return (
       <article className={styles.item} key={instrument.symbol}>
-        <Link className={styles.itemLink} to={`/instrument/${encodeURIComponent(instrument.symbol)}`}>
+        <Link
+          className={styles.itemLink}
+          to={`/instrument/${encodeURIComponent(instrument.symbol)}`}
+          state={{ instrument }}
+        >
           {instrument.name}
         </Link>
         {renderInstrumentMeta(instrument)}
@@ -62,9 +76,9 @@ const DashboardPage: FC = () => {
               when you want real market responses.
             </p>
           </div>
-          <Link className={styles.cta} to="/search">
+          <button className={styles.cta} type="button" onClick={handleOpenSearch}>
             Search instruments
-          </Link>
+          </button>
         </section>
 
         <section className={styles.grid} aria-label="Dashboard previews">
@@ -103,7 +117,9 @@ const DashboardPage: FC = () => {
               <h2 className={styles.panelTitle}>API mode</h2>
             </div>
             <p className={styles.emptyText}>
-              Live market calls stay off by default, keeping local development calm.
+              {shouldUseFmpApi
+                ? 'Live search is on. Quote coverage still depends on your Financial Modeling Prep plan.'
+                : 'Mock mode is active, so search and details stay stable while you build.'}
             </p>
           </article>
         </section>
@@ -113,9 +129,9 @@ const DashboardPage: FC = () => {
             <h2 className={styles.panelTitle} id="popular-instruments-heading">
               Popular instruments
             </h2>
-            <Link className={styles.panelLink} to="/search">
+            <button className={styles.panelAction} type="button" onClick={handleOpenSearch}>
               Search all
-            </Link>
+            </button>
           </div>
           <div className={styles.popularGrid}>{popularInstruments.map(renderPopularInstrument)}</div>
         </section>

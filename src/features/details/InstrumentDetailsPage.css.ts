@@ -98,6 +98,13 @@ export const heroPrice = style({
   lineHeight: 1.1,
 })
 
+export const heroPriceFallback = style({
+  color: vars.colors.text,
+  fontSize: vars.fontSize.xl,
+  fontWeight: 700,
+  lineHeight: 1.2,
+})
+
 export const heroChange = style({
   fontSize: vars.fontSize.md,
   fontWeight: 700,

@@ -29,9 +29,6 @@ const AppLayout: FC<Props> = (props) => {
             <GlobalSearch />
           </div>
           <div className={styles.links}>
-            <Link className={styles.link} to="/search">
-              Search
-            </Link>
             <Link className={styles.link} to="/compare">
               Compare
             </Link>

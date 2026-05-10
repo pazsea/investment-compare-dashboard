@@ -44,7 +44,7 @@ export const brand = style({
 
 export const links = style({
   display: 'grid',
-  gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
   gap: vars.space.sm,
 
   '@media': {

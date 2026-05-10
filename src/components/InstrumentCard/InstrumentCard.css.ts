@@ -3,6 +3,7 @@ import { style } from '@vanilla-extract/css'
 import { breakpoints, vars } from '../../styles/theme.css'
 
 export const card = style({
+  position: 'relative',
   display: 'flex',
   minHeight: '180px',
   flexDirection: 'column',
@@ -23,8 +24,17 @@ export const card = style({
 })
 
 export const header = style({
+  position: 'relative',
+  zIndex: 1,
   display: 'grid',
   gap: vars.space.sm,
+})
+
+export const stretchedLink = style({
+  position: 'absolute',
+  inset: 0,
+  zIndex: 0,
+  borderRadius: vars.radii.md,
 })
 
 export const symbolRow = style({
@@ -68,6 +78,8 @@ export const meta = style({
 })
 
 export const actions = style({
+  position: 'relative',
+  zIndex: 1,
   display: 'grid',
   gridTemplateColumns: '1fr',
   gap: vars.space.sm,

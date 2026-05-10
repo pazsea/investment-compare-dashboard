@@ -68,9 +68,15 @@ const InstrumentCard: FC<Props> = (props) => {
           <span>{currency}</span>
         </div>
       </div>
+      <Link
+        className={styles.stretchedLink}
+        to={getInstrumentDetailsPath(instrument.symbol)}
+        state={{ instrument }}
+        aria-label={`Open ${instrument.name}`}
+      />
 
       <div className={styles.actions} aria-label={`${instrument.symbol} actions`}>
-        <Link className={styles.action} to={getInstrumentDetailsPath(instrument.symbol)}>
+        <Link className={styles.action} to={getInstrumentDetailsPath(instrument.symbol)} state={{ instrument }}>
           View details
         </Link>
         <button

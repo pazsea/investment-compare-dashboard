@@ -68,9 +68,11 @@ export const cta = style({
   minHeight: '44px',
   alignItems: 'center',
   justifyContent: 'center',
+  border: 0,
   borderRadius: vars.radii.sm,
   background: vars.colors.primary,
   color: vars.colors.surface,
+  cursor: 'pointer',
   fontSize: vars.fontSize.sm,
   fontWeight: 700,
   padding: `${vars.space.sm} ${vars.space.lg}`,
@@ -137,6 +139,16 @@ export const panelLink = style({
     color: vars.colors.primaryHover,
   },
 })
+
+export const panelAction = style([
+  panelLink,
+  {
+    border: 0,
+    background: 'transparent',
+    cursor: 'pointer',
+    padding: 0,
+  },
+])
 
 export const emptyText = style({
   margin: 0,

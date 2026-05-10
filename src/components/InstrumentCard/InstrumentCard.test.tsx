@@ -24,6 +24,7 @@ vi.mock('./InstrumentCard.css', () => ({
   selectedButton: 'selectedButton',
   symbol: 'symbol',
   symbolRow: 'symbolRow',
+  stretchedLink: 'stretchedLink',
   type: 'type',
 }))
 

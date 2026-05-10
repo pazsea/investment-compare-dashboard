@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useSearchInstrumentsQuery } from '../../api/instrumentsApi'
 import { useDebounce } from '../../hooks/useDebounce'
 import type { Instrument } from '../../types/instrument'
+import { OPEN_GLOBAL_SEARCH_EVENT } from '../../utils/globalSearch'
 
 import * as styles from './GlobalSearch.css'
 
@@ -111,6 +112,19 @@ const GlobalSearch: FC<Props> = () => {
   }, [])
 
   useEffect(() => {
+    const handleOpenSearch = () => {
+      setIsOpen(true)
+      inputRef.current?.focus()
+    }
+
+    window.addEventListener(OPEN_GLOBAL_SEARCH_EVENT, handleOpenSearch)
+
+    return () => {
+      window.removeEventListener(OPEN_GLOBAL_SEARCH_EVENT, handleOpenSearch)
+    }
+  }, [])
+
+  useEffect(() => {
     const handlePointerDown = (event: globalThis.MouseEvent) => {
       if (!shellRef.current?.contains(event.target as Node)) {
         setIsOpen(false)
@@ -146,7 +160,9 @@ const GlobalSearch: FC<Props> = () => {
       saveRecentSearch(instrument)
       setIsOpen(false)
       setQuery('')
-      navigate(`/instrument/${encodeURIComponent(instrument.symbol)}`)
+      navigate(`/instrument/${encodeURIComponent(instrument.symbol)}`, {
+        state: { instrument },
+      })
     },
     [navigate, saveRecentSearch],
   )

@@ -25,6 +25,22 @@ export type FmpQuoteResponse = {
   exchange?: string
 }
 
+const mergeSearchResults = (
+  firstResults: FmpSearchInstrumentResponse[],
+  secondResults: FmpSearchInstrumentResponse[],
+) => {
+  const mergedResults = [...firstResults, ...secondResults]
+  const uniqueResults = new Map<string, FmpSearchInstrumentResponse>()
+
+  mergedResults.forEach((result) => {
+    if (result.symbol) {
+      uniqueResults.set(result.symbol, result)
+    }
+  })
+
+  return Array.from(uniqueResults.values())
+}
+
 const baseQuery = fetchBaseQuery({
   baseUrl: FMP_BASE_URL,
 })
@@ -109,14 +125,22 @@ export const instrumentsApi = createApi({
           url: '/stable/search-symbol',
           params: withApiKey({ query: normalizedQuery }),
         })
+        const nameResult = await fetchWithBaseQuery({
+          url: '/stable/search-name',
+          params: withApiKey({ query: normalizedQuery }),
+        })
 
-        if (result.error) {
+        if (result.error && nameResult.error) {
           return getFallbackSearch(normalizedQuery)
         }
 
-        const rawResults = Array.isArray(result.data)
+        const symbolResults = Array.isArray(result.data)
           ? (result.data as FmpSearchInstrumentResponse[])
           : []
+        const nameResults = Array.isArray(nameResult.data)
+          ? (nameResult.data as FmpSearchInstrumentResponse[])
+          : []
+        const rawResults = mergeSearchResults(symbolResults, nameResults)
 
         return {
           data: rawResults

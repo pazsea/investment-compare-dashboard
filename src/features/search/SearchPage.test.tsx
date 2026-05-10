@@ -29,6 +29,14 @@ vi.mock('./SearchPage.css', () => ({
   title: 'title',
 }))
 
+vi.mock('../../api/config', () => ({
+  FMP_API_KEY: '',
+  FMP_BASE_URL: 'https://financialmodelingprep.com',
+  USE_FMP_API: false,
+  hasFmpApiKey: false,
+  shouldUseFmpApi: false,
+}))
+
 vi.mock('../../components/InstrumentCard/InstrumentCard.css', () => ({
   actions: 'actions',
   action: 'action',
@@ -40,6 +48,7 @@ vi.mock('../../components/InstrumentCard/InstrumentCard.css', () => ({
   selectedButton: 'selectedButton',
   symbol: 'symbol',
   symbolRow: 'symbolRow',
+  stretchedLink: 'stretchedLink',
   type: 'type',
 }))
 
