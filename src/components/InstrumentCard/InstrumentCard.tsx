@@ -3,6 +3,7 @@ import type { FC } from 'react'
 import clsx from 'clsx'
 
 import { useCompareSelection } from '../../hooks/useCompareSelection'
+import { useWatchlist } from '../../hooks/useWatchlist'
 import type { Instrument } from '../../types/instrument'
 
 import * as styles from './InstrumentCard.css'
@@ -18,11 +19,15 @@ const getInstrumentTypeLabel = (type: Instrument['type']) => {
 const InstrumentCard: FC<Props> = (props) => {
   const { instrument } = props
   const { addToCompare, canAddToCompare, isInCompare, removeFromCompare } = useCompareSelection()
+  const { addToWatchlist, isInWatchlist, removeFromWatchlist } = useWatchlist()
   const exchange = instrument.exchange ?? 'Market unavailable'
   const currency = instrument.currency ?? 'Currency unavailable'
   const isSelectedForCompare = isInCompare(instrument.symbol)
+  const isSavedToWatchlist = isInWatchlist(instrument.symbol)
   const compareButtonLabel = isSelectedForCompare ? 'Remove from compare' : 'Add to compare'
+  const watchlistButtonLabel = isSavedToWatchlist ? 'Remove from watchlist' : 'Add to watchlist'
   const compareButtonClassName = clsx(styles.button, isSelectedForCompare && styles.selectedButton)
+  const watchlistButtonClassName = clsx(styles.button, isSavedToWatchlist && styles.selectedButton)
   const isCompareDisabled = !isSelectedForCompare && !canAddToCompare
 
   const handleCompareAction = useCallback(() => {
@@ -33,6 +38,15 @@ const InstrumentCard: FC<Props> = (props) => {
 
     addToCompare(instrument)
   }, [addToCompare, instrument, isSelectedForCompare, removeFromCompare])
+
+  const handleWatchlistAction = useCallback(() => {
+    if (isSavedToWatchlist) {
+      removeFromWatchlist(instrument.symbol)
+      return
+    }
+
+    addToWatchlist(instrument)
+  }, [addToWatchlist, instrument, isSavedToWatchlist, removeFromWatchlist])
 
   return (
     <article className={styles.card} aria-labelledby={`${instrument.symbol}-name`}>
@@ -60,8 +74,13 @@ const InstrumentCard: FC<Props> = (props) => {
         >
           {compareButtonLabel}
         </button>
-        <button className={styles.button} type="button" disabled>
-          Add to watchlist
+        <button
+          className={watchlistButtonClassName}
+          type="button"
+          aria-label={`${watchlistButtonLabel} ${instrument.symbol}`}
+          onClick={handleWatchlistAction}
+        >
+          {watchlistButtonLabel}
         </button>
       </div>
     </article>

@@ -7,6 +7,7 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { clearCompare } from '../../features/compare/compareSlice'
+import { clearWatchlist, WATCHLIST_STORAGE_KEY } from '../../features/watchlist/watchlistSlice'
 import { store } from '../../store'
 import type { Instrument } from '../../types/instrument'
 import InstrumentCard from './InstrumentCard'
@@ -44,6 +45,8 @@ const showInstrumentCard = () => {
 describe('when showing an instrument card', () => {
   afterEach(() => {
     store.dispatch(clearCompare())
+    store.dispatch(clearWatchlist())
+    window.localStorage.removeItem(WATCHLIST_STORAGE_KEY)
   })
 
   it('should expose the key instrument details', () => {
@@ -67,9 +70,13 @@ describe('when showing an instrument card', () => {
     expect(screen.getByRole('button', { name: 'Remove from compare AAPL' })).toBeEnabled()
   })
 
-  it('should keep the watchlist action unavailable for now', () => {
+  it('should allow the instrument to be saved to the watchlist', async () => {
+    const user = userEvent.setup()
+
     showInstrumentCard()
 
-    expect(screen.getByRole('button', { name: 'Add to watchlist' })).toBeDisabled()
+    await user.click(screen.getByRole('button', { name: 'Add to watchlist AAPL' }))
+
+    expect(screen.getByRole('button', { name: 'Remove from watchlist AAPL' })).toBeEnabled()
   })
 })
