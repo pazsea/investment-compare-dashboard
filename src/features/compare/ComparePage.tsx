@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { ChangeEvent, MouseEvent } from 'react'
 import clsx from 'clsx'
 import {
@@ -13,7 +13,6 @@ import {
 import { DataTable } from '../../components/DataTable'
 import { EmptyState } from '../../components/EmptyState'
 import { PageHeader } from '../../components/PageHeader'
-import type { Column } from '../../components/DataTable'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import type { Instrument } from '../../types/instrument'
 import {
@@ -26,6 +25,8 @@ import {
   getCompareMetrics,
   type CompareRange,
 } from './comparePerformance'
+import { formatRoundedChartTick, formatSekCurrency } from './compareFormatters'
+import { createCompareColumns, getCompareRowKey } from './compareTable'
 
 import * as styles from './ComparePage.css'
 
@@ -37,38 +38,6 @@ const chartColors = [
   'var(--compare-line-3, #D97706)',
   'var(--compare-line-4, #DC2626)',
 ]
-
-const getRowKey = (instrument: Instrument) => {
-  return instrument.symbol
-}
-
-const renderNameCell = (instrument: Instrument) => {
-  return instrument.name
-}
-
-const renderSymbolCell = (instrument: Instrument) => {
-  return instrument.symbol
-}
-
-const renderTypeCell = (instrument: Instrument) => {
-  return getInstrumentTypeLabel(instrument.type)
-}
-
-const renderCurrencyCell = (instrument: Instrument) => {
-  return getCurrencyLabel(instrument.currency)
-}
-
-const renderExchangeCell = (instrument: Instrument) => {
-  return getExchangeLabel(instrument.exchange)
-}
-
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('sv-SE', {
-    currency: 'SEK',
-    maximumFractionDigits: 0,
-    style: 'currency',
-  }).format(value)
-}
 
 const ComparePage: React.FC = () => {
   const { clearCompare, removeFromCompare, selectedInstruments } = useCompareSelection()
@@ -121,38 +90,17 @@ const ComparePage: React.FC = () => {
     }
   }
 
-  const handleRemoveFromCompare = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleRemoveFromCompare = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     const symbol = event.currentTarget.dataset.symbol
 
     if (symbol) {
       removeFromCompare(symbol)
     }
-  }
+  }, [removeFromCompare])
 
-  const renderActionCell = (instrument: Instrument) => {
-    return (
-      <button
-        className={styles.removeButton}
-        type="button"
-        data-symbol={instrument.symbol}
-        aria-label={`Remove ${instrument.symbol} from compare`}
-        onClick={handleRemoveFromCompare}
-      >
-        Ta bort
-      </button>
-    )
-  }
-
-  const columns = useMemo<Column<Instrument>[]>(() => {
-    return [
-      { id: 'name', header: 'Namn', renderCell: renderNameCell },
-      { id: 'symbol', header: 'Kortnamn', renderCell: renderSymbolCell },
-      { id: 'type', header: 'Typ', renderCell: renderTypeCell },
-      { id: 'currency', header: 'Valuta', renderCell: renderCurrencyCell },
-      { id: 'exchange', header: 'Marknad', renderCell: renderExchangeCell },
-      { id: 'actions', header: 'Åtgärder', renderCell: renderActionCell },
-    ]
-  }, [])
+  const columns = useMemo(() => {
+    return createCompareColumns(handleRemoveFromCompare)
+  }, [handleRemoveFromCompare])
 
   const renderRangeButton = (option: CompareRange) => {
     return (
@@ -222,17 +170,17 @@ const ComparePage: React.FC = () => {
         <dl className={styles.scenarioGrid}>
           <div>
             <dt className={styles.statLabel}>Startbelopp</dt>
-            <dd className={styles.statValue}>{formatCurrency(startingAmount)}</dd>
+            <dd className={styles.statValue}>{formatSekCurrency(startingAmount)}</dd>
           </div>
           <div>
             <dt className={styles.statLabel}>Slutvärde</dt>
-            <dd className={styles.statValue}>{formatCurrency(entry.endingValue)}</dd>
+            <dd className={styles.statValue}>{formatSekCurrency(entry.endingValue)}</dd>
           </div>
           <div>
             <dt className={styles.statLabel}>Vinst / förlust</dt>
             <dd className={clsx(styles.statValue, gainLossClassName)}>
               {gainLossPrefix}
-              {formatCurrency(Math.abs(entry.gainLoss))}
+              {formatSekCurrency(Math.abs(entry.gainLoss))}
             </dd>
           </div>
         </dl>
@@ -351,7 +299,7 @@ const ComparePage: React.FC = () => {
                           tickLine={false}
                           axisLine={false}
                           width={48}
-                          tickFormatter={(value) => String(Math.round(Number(value)))}
+                          tickFormatter={formatRoundedChartTick}
                           domain={['dataMin - 4', 'dataMax + 4']}
                         />
                         <Tooltip />
@@ -393,7 +341,7 @@ const ComparePage: React.FC = () => {
 
               <div className={styles.mobileList}>{selectedInstruments.map(renderMobileCard)}</div>
               <div className={styles.desktopTable}>
-                <DataTable columns={columns} getRowKey={getRowKey} rows={selectedInstruments} />
+                <DataTable columns={columns} getRowKey={getCompareRowKey} rows={selectedInstruments} />
               </div>
             </div>
           </section>
