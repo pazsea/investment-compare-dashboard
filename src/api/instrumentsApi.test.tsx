@@ -10,13 +10,13 @@ import { setupServer } from 'msw/node'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 const server = setupServer(
-  http.get('https://financialmodelingprep.com/stable/search-symbol', () => {
+  http.get('https://financialmodelingprep.com/api/v3/search-ticker', () => {
     return HttpResponse.json([
       {
         symbol: 'NVDA',
         name: 'NVIDIA Corporation',
         currency: 'USD',
-        exchange: 'NASDAQ',
+        exchangeShortName: 'NASDAQ',
       },
     ])
   }),

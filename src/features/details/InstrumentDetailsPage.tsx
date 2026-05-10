@@ -4,6 +4,7 @@ import { useLocation, useParams } from 'react-router-dom'
 import clsx from 'clsx'
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 
+import { canUseLiveQuoteForInstrument, canUseLiveQuoteForSymbol } from '../../api/fmpAvailability'
 import { useGetInstrumentQuoteQuery } from '../../api/instrumentsApi'
 import { EmptyState } from '../../components/EmptyState'
 import { ErrorState } from '../../components/ErrorState'
@@ -92,12 +93,16 @@ const InstrumentDetailsPage: FC = () => {
   const location = useLocation()
   const locationState = isDetailsLocationState(location.state) ? location.state : undefined
   const symbol = params.symbol?.trim().toUpperCase() ?? ''
-  const { data: quote, isError, isFetching } = useGetInstrumentQuoteQuery(symbol, {
-    skip: !symbol,
-  })
   const fallbackInstrument = findMockInstrument(symbol)
+  const routeInstrument = locationState?.instrument ?? fallbackInstrument
+  const shouldFetchLiveQuote = routeInstrument
+    ? canUseLiveQuoteForInstrument(routeInstrument)
+    : canUseLiveQuoteForSymbol(symbol)
+  const { data: quote, isError, isFetching } = useGetInstrumentQuoteQuery(symbol, {
+    skip: !symbol || !shouldFetchLiveQuote,
+  })
   const instrument =
-    locationState?.instrument ?? fallbackInstrument ?? (quote ? createInstrumentFromQuote(quote) : undefined)
+    routeInstrument ?? (quote ? createInstrumentFromQuote(quote) : undefined)
   const { addToCompare, canAddToCompare, isInCompare, removeFromCompare } = useCompareSelection()
   const { addToWatchlist, isInWatchlist, removeFromWatchlist } = useWatchlist()
   const isSelectedForCompare = instrument ? isInCompare(instrument.symbol) : false

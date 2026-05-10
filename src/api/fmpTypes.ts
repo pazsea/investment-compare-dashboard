@@ -3,6 +3,7 @@ export type FmpSearchInstrumentResponse = {
   name?: string
   currency?: string
   exchange?: string
+  exchangeShortName?: string
   exchangeFullName?: string
   stockExchange?: string
 }

@@ -42,21 +42,16 @@ export const instrumentsApi = createApi({
         }
 
         const result = await fetchWithBaseQuery({
-          url: '/stable/search-symbol',
-          params: withApiKey({ query: normalizedQuery }),
-        })
-        const nameResult = await fetchWithBaseQuery({
-          url: '/stable/search-name',
-          params: withApiKey({ query: normalizedQuery }),
+          url: '/api/v3/search-ticker',
+          params: withApiKey({ limit: '10', query: normalizedQuery }),
         })
 
-        if (result.error && nameResult.error) {
+        if (result.error) {
           return getFallbackSearch(normalizedQuery)
         }
 
         const symbolResults = parseFmpSearchResponse(result.data)
-        const nameResults = parseFmpSearchResponse(nameResult.data)
-        const rawResults = mergeSearchResults(symbolResults, nameResults)
+        const rawResults = mergeSearchResults(symbolResults, [])
 
         return {
           data: rawResults.map(mapSearchResultToInstrument).filter(isInstrument),

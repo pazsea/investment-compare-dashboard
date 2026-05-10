@@ -27,7 +27,8 @@ export const mapSearchResultToInstrument = (
     return undefined
   }
 
-  const exchange = result.exchange ?? result.exchangeFullName ?? result.stockExchange
+  const exchange =
+    result.exchange ?? result.exchangeShortName ?? result.exchangeFullName ?? result.stockExchange
 
   return {
     type: inferInstrumentType(result.symbol, result.name),

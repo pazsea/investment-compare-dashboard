@@ -21,6 +21,7 @@ export const isFmpSearchInstrumentResponse = (
     isOptionalString(value.name) &&
     isOptionalString(value.currency) &&
     isOptionalString(value.exchange) &&
+    isOptionalString(value.exchangeShortName) &&
     isOptionalString(value.exchangeFullName) &&
     isOptionalString(value.stockExchange)
   )

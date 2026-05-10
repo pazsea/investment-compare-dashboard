@@ -2,6 +2,7 @@ import type { FC, MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 
+import { canUseLiveQuoteForInstrument } from '../../api/fmpAvailability'
 import { useGetInstrumentQuoteQuery } from '../../api/instrumentsApi'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import { useWatchlist } from '../../hooks/useWatchlist'
@@ -28,7 +29,10 @@ const WatchlistCard: FC<Props> = (props) => {
   const { instrument } = props
   const { addToCompare, canAddToCompare, isInCompare } = useCompareSelection()
   const { removeFromWatchlist } = useWatchlist()
-  const { data: quote } = useGetInstrumentQuoteQuery(instrument.symbol)
+  const shouldFetchLiveQuote = canUseLiveQuoteForInstrument(instrument)
+  const { data: quote } = useGetInstrumentQuoteQuery(instrument.symbol, {
+    skip: !shouldFetchLiveQuote,
+  })
   const isSelectedForCompare = isInCompare(instrument.symbol)
   const compareButtonLabel = isSelectedForCompare ? 'Redan i jämförelse' : 'Lägg till i jämförelse'
   const isCompareDisabled = isSelectedForCompare || !canAddToCompare
