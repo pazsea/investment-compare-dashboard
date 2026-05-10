@@ -1,19 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-function Home() {
-  return (
-    <div>
-      <h1>Investment Compare Dashboard</h1>
-      <p>Compare investment instruments side by side.</p>
-    </div>
-  )
-}
+import SearchPage from './features/search/SearchPage'
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<SearchPage />} />
+        <Route path="/search" element={<SearchPage />} />
       </Routes>
     </BrowserRouter>
   )
