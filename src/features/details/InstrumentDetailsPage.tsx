@@ -91,7 +91,6 @@ const InstrumentDetailsPage: FC = () => {
   const { data: profile, isError, isFetching } = useGetInstrumentProfileQuery(symbol, {
     skip: !symbol,
   })
-  console.log('Fetched profile:', profile)
   const profileInstrument = profile ? createInstrumentFromProfile(profile) : undefined
   const instrument = routeInstrument ?? profileInstrument
   const { addToCompare, canAddToCompare, isInCompare, removeFromCompare } = useCompareSelection()
