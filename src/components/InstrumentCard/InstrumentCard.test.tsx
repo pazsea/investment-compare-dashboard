@@ -1,9 +1,13 @@
 /**
  * @vitest-environment jsdom
  */
+import { Provider } from 'react-redux'
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { clearCompare } from '../../features/compare/compareSlice'
+import { store } from '../../store'
 import type { Instrument } from '../../types/instrument'
 import InstrumentCard from './InstrumentCard'
 
@@ -14,6 +18,7 @@ vi.mock('./InstrumentCard.css', () => ({
   header: 'header',
   meta: 'meta',
   name: 'name',
+  selectedButton: 'selectedButton',
   symbol: 'symbol',
   symbolRow: 'symbolRow',
   type: 'type',
@@ -28,9 +33,21 @@ const instrument: Instrument = {
   sector: 'Technology',
 }
 
+const showInstrumentCard = () => {
+  return render(
+    <Provider store={store}>
+      <InstrumentCard instrument={instrument} />
+    </Provider>,
+  )
+}
+
 describe('when showing an instrument card', () => {
+  afterEach(() => {
+    store.dispatch(clearCompare())
+  })
+
   it('should expose the key instrument details', () => {
-    render(<InstrumentCard instrument={instrument} />)
+    showInstrumentCard()
 
     expect(screen.getByRole('article', { name: 'Apple Inc.' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Apple Inc.' })).toBeInTheDocument()
@@ -40,10 +57,19 @@ describe('when showing an instrument card', () => {
     expect(screen.getByText('USD')).toBeInTheDocument()
   })
 
-  it('should keep compare and watchlist actions unavailable for now', () => {
-    render(<InstrumentCard instrument={instrument} />)
+  it('should allow the instrument to be selected for comparison', async () => {
+    const user = userEvent.setup()
 
-    expect(screen.getByRole('button', { name: 'Add to compare' })).toBeDisabled()
+    showInstrumentCard()
+
+    await user.click(screen.getByRole('button', { name: 'Add to compare AAPL' }))
+
+    expect(screen.getByRole('button', { name: 'Remove from compare AAPL' })).toBeEnabled()
+  })
+
+  it('should keep the watchlist action unavailable for now', () => {
+    showInstrumentCard()
+
     expect(screen.getByRole('button', { name: 'Add to watchlist' })).toBeDisabled()
   })
 })

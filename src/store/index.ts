@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import { instrumentsApi } from '../api/instrumentsApi'
+import { compareReducer } from '../features/compare/compareSlice'
 
 export const store = configureStore({
   reducer: {
+    compare: compareReducer,
     [instrumentsApi.reducerPath]: instrumentsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(instrumentsApi.middleware),

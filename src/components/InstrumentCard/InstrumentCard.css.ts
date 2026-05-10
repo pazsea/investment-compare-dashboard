@@ -77,8 +77,19 @@ export const button = style({
   border: `1px solid ${vars.colors.border}`,
   borderRadius: vars.radii.sm,
   background: vars.colors.surfaceElevated,
-  color: vars.colors.textMuted,
-  cursor: 'not-allowed',
+  color: vars.colors.text,
+  cursor: 'pointer',
   fontSize: vars.fontSize.sm,
   fontWeight: 700,
+
+  ':disabled': {
+    color: vars.colors.textMuted,
+    cursor: 'not-allowed',
+  },
+})
+
+export const selectedButton = style({
+  borderColor: vars.colors.primary,
+  background: vars.colors.primarySoft,
+  color: vars.colors.primary,
 })

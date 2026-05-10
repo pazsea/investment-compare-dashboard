@@ -35,6 +35,7 @@ vi.mock('../../components/InstrumentCard/InstrumentCard.css', () => ({
   header: 'header',
   meta: 'meta',
   name: 'name',
+  selectedButton: 'selectedButton',
   symbol: 'symbol',
   symbolRow: 'symbolRow',
   type: 'type',

@@ -1,5 +1,8 @@
+import { useCallback } from 'react'
 import type { FC } from 'react'
+import clsx from 'clsx'
 
+import { useCompareSelection } from '../../hooks/useCompareSelection'
 import type { Instrument } from '../../types/instrument'
 
 import * as styles from './InstrumentCard.css'
@@ -14,8 +17,22 @@ const getInstrumentTypeLabel = (type: Instrument['type']) => {
 
 const InstrumentCard: FC<Props> = (props) => {
   const { instrument } = props
+  const { addToCompare, canAddToCompare, isInCompare, removeFromCompare } = useCompareSelection()
   const exchange = instrument.exchange ?? 'Market unavailable'
   const currency = instrument.currency ?? 'Currency unavailable'
+  const isSelectedForCompare = isInCompare(instrument.symbol)
+  const compareButtonLabel = isSelectedForCompare ? 'Remove from compare' : 'Add to compare'
+  const compareButtonClassName = clsx(styles.button, isSelectedForCompare && styles.selectedButton)
+  const isCompareDisabled = !isSelectedForCompare && !canAddToCompare
+
+  const handleCompareAction = useCallback(() => {
+    if (isSelectedForCompare) {
+      removeFromCompare(instrument.symbol)
+      return
+    }
+
+    addToCompare(instrument)
+  }, [addToCompare, instrument, isSelectedForCompare, removeFromCompare])
 
   return (
     <article className={styles.card} aria-labelledby={`${instrument.symbol}-name`}>
@@ -34,8 +51,14 @@ const InstrumentCard: FC<Props> = (props) => {
       </div>
 
       <div className={styles.actions} aria-label={`${instrument.symbol} actions`}>
-        <button className={styles.button} type="button" disabled>
-          Add to compare
+        <button
+          className={compareButtonClassName}
+          type="button"
+          disabled={isCompareDisabled}
+          aria-label={`${compareButtonLabel} ${instrument.symbol}`}
+          onClick={handleCompareAction}
+        >
+          {compareButtonLabel}
         </button>
         <button className={styles.button} type="button" disabled>
           Add to watchlist
