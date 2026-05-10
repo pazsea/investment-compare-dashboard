@@ -4,6 +4,9 @@ import { useParams } from 'react-router-dom'
 import clsx from 'clsx'
 
 import { useGetInstrumentQuoteQuery } from '../../api/instrumentsApi'
+import { EmptyState } from '../../components/EmptyState'
+import { ErrorState } from '../../components/ErrorState'
+import { LoadingState } from '../../components/LoadingState'
 import { findMockInstrument } from '../../mocks/instruments'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import { useWatchlist } from '../../hooks/useWatchlist'
@@ -111,21 +114,15 @@ const InstrumentDetailsPage: FC = () => {
     <main className={styles.page}>
       <div className={styles.shell}>
         {isFetching && (
-          <section className={styles.status} aria-live="polite">
-            Loading instrument details...
-          </section>
+          <LoadingState message="Loading instrument details..." />
         )}
 
         {isError && (
-          <section className={styles.errorStatus} aria-live="assertive">
-            Instrument details are unavailable right now.
-          </section>
+          <ErrorState message="Instrument details are unavailable right now." />
         )}
 
         {!isFetching && !isError && !instrument && (
-          <section className={styles.status} aria-live="polite">
-            No details found for {symbol || 'this instrument'}.
-          </section>
+          <EmptyState message={`No details found for ${symbol || 'this instrument'}.`} />
         )}
 
         {!isFetching && !isError && instrument && quote && (

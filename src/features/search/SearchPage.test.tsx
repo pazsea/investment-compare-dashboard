@@ -43,6 +43,24 @@ vi.mock('../../components/InstrumentCard/InstrumentCard.css', () => ({
   type: 'type',
 }))
 
+vi.mock('../../components/EmptyState/EmptyState.css', () => ({
+  container: 'container',
+  message: 'message',
+  title: 'title',
+}))
+
+vi.mock('../../components/ErrorState/ErrorState.css', () => ({
+  container: 'container',
+  message: 'message',
+  title: 'title',
+}))
+
+vi.mock('../../components/LoadingState/LoadingState.css', () => ({
+  container: 'container',
+  message: 'message',
+  title: 'title',
+}))
+
 const showSearchPage = () => {
   return render(
     <Provider store={store}>

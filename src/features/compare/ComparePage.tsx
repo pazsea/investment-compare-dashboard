@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import type { MouseEvent } from 'react'
 
 import { DataTable } from '../../components/DataTable'
+import { EmptyState } from '../../components/EmptyState'
 import type { Column } from '../../components/DataTable'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import type { Instrument } from '../../types/instrument'
@@ -125,9 +126,7 @@ const ComparePage: React.FC = () => {
         </header>
 
         {selectedCount === 0 && (
-          <section className={styles.emptyState} aria-live="polite">
-            No instruments selected for comparison yet.
-          </section>
+          <EmptyState message="No instruments selected for comparison yet." />
         )}
 
         {selectedCount > 0 && (

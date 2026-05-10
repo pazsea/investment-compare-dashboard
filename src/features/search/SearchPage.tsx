@@ -2,7 +2,10 @@ import { useState } from 'react'
 import type { ChangeEvent, FC } from 'react'
 
 import { useSearchInstrumentsQuery } from '../../api/instrumentsApi'
+import { EmptyState } from '../../components/EmptyState'
+import { ErrorState } from '../../components/ErrorState'
 import { InstrumentCard } from '../../components/InstrumentCard'
+import { LoadingState } from '../../components/LoadingState'
 import { useDebounce } from '../../hooks/useDebounce'
 import type { Instrument } from '../../types/instrument'
 
@@ -59,27 +62,19 @@ const SearchPage: FC = () => {
         </section>
 
         {!shouldSearch && (
-          <section className={styles.status} aria-live="polite">
-            Start with a symbol or company name.
-          </section>
+          <EmptyState message="Start with a symbol or company name." />
         )}
 
         {shouldSearch && isFetching && (
-          <section className={styles.status} aria-live="polite">
-            Searching instruments...
-          </section>
+          <LoadingState message="Searching instruments..." />
         )}
 
         {shouldSearch && isError && (
-          <section className={styles.errorStatus} aria-live="assertive">
-            Search is unavailable right now. Try again in a moment.
-          </section>
+          <ErrorState message="Search is unavailable right now. Try again in a moment." />
         )}
 
         {shouldSearch && !isFetching && !isError && instruments.length === 0 && (
-          <section className={styles.status} aria-live="polite">
-            No instruments found for "{debouncedQuery}".
-          </section>
+          <EmptyState message={`No instruments found for "${debouncedQuery}".`} />
         )}
 
         {shouldSearch && !isError && instruments.length > 0 && (

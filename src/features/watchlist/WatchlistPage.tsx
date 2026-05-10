@@ -1,5 +1,6 @@
 import type { MouseEvent } from 'react'
 
+import { EmptyState } from '../../components/EmptyState'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import { useWatchlist } from '../../hooks/useWatchlist'
 import type { Instrument } from '../../types/instrument'
@@ -82,9 +83,7 @@ const WatchlistPage: React.FC = () => {
         </header>
 
         {instruments.length === 0 && (
-          <section className={styles.emptyState} aria-live="polite">
-            Your watchlist is empty.
-          </section>
+          <EmptyState message="Your watchlist is empty." />
         )}
 
         {instruments.length > 0 && (
