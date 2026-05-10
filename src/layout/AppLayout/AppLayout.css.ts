@@ -25,10 +25,14 @@ export const nav = style({
 
   '@media': {
     [`(min-width: ${breakpoints.tablet})`]: {
-      gridTemplateColumns: 'auto 1fr auto',
+      gridTemplateColumns: 'auto minmax(260px, 420px) 1fr auto',
       alignItems: 'center',
     },
   },
+})
+
+export const search = style({
+  width: '100%',
 })
 
 export const brand = style({

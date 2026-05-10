@@ -1,6 +1,7 @@
 import type { FC, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
+import { GlobalSearch } from '../../components/GlobalSearch'
 import { useTheme } from '../../context/ThemeContext'
 
 import * as styles from './AppLayout.css'
@@ -20,6 +21,9 @@ const AppLayout: FC<Props> = (props) => {
           <Link className={styles.brand} to="/">
             Investment Compare
           </Link>
+          <div className={styles.search}>
+            <GlobalSearch />
+          </div>
           <div className={styles.links}>
             <Link className={styles.link} to="/search">
               Search
