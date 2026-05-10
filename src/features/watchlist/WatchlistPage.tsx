@@ -4,6 +4,7 @@ import clsx from 'clsx'
 
 import { useGetInstrumentQuoteQuery } from '../../api/instrumentsApi'
 import { EmptyState } from '../../components/EmptyState'
+import { PageHeader } from '../../components/PageHeader'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import { useWatchlist } from '../../hooks/useWatchlist'
 import type { Instrument, InstrumentQuote } from '../../types/instrument'
@@ -171,13 +172,11 @@ const WatchlistPage: FC = () => {
   return (
     <main className={styles.page}>
       <div className={styles.shell}>
-        <header className={styles.header}>
-          <p className={styles.eyebrow}>Bevakningslista</p>
-          <h1 className={styles.title}>Följ instrument du vill återvända till.</h1>
-          <p className={styles.summary}>
-            Håll intressanta instrument nära till hands medan du avgör vad som förtjänar djupare analys.
-          </p>
-        </header>
+        <PageHeader
+          eyebrow="Bevakningslista"
+          title="Följ instrument du vill återvända till."
+          summary="Håll intressanta instrument nära till hands medan du avgör vad som förtjänar djupare analys."
+        />
 
         {instruments.length === 0 && <EmptyState message="Din bevakningslista är tom." />}
 

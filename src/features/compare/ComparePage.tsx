@@ -12,6 +12,7 @@ import {
 
 import { DataTable } from '../../components/DataTable'
 import { EmptyState } from '../../components/EmptyState'
+import { PageHeader } from '../../components/PageHeader'
 import type { Column } from '../../components/DataTable'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import type { Instrument } from '../../types/instrument'
@@ -303,13 +304,11 @@ const ComparePage: React.FC = () => {
   return (
     <main className={styles.page}>
       <div className={styles.shell}>
-        <header className={styles.header}>
-          <p className={styles.eyebrow}>Jämförelse</p>
-          <h1 className={styles.title}>Jämför valda instrument.</h1>
-          <p className={styles.summary}>
-            Granska valda instrument sida vid sida och få en snabb bild av utveckling och nyckeltal.
-          </p>
-        </header>
+        <PageHeader
+          eyebrow="Jämförelse"
+          title="Jämför valda instrument."
+          summary="Granska valda instrument sida vid sida och få en snabb bild av utveckling och nyckeltal."
+        />
 
         {selectedCount === 0 && (
           <EmptyState message="Inga instrument har lagts till för jämförelse ännu." />
