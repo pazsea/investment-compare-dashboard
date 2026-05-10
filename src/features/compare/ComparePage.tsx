@@ -16,6 +16,11 @@ import type { Column } from '../../components/DataTable'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import type { Instrument } from '../../types/instrument'
 import {
+  getCurrencyLabel,
+  getExchangeLabel,
+  getInstrumentTypeLabel,
+} from '../../utils/instrumentPresentation'
+import {
   getCompareChartData,
   getCompareMetrics,
   type CompareRange,
@@ -45,20 +50,20 @@ const renderSymbolCell = (instrument: Instrument) => {
 }
 
 const renderTypeCell = (instrument: Instrument) => {
-  return instrument.type.toUpperCase()
+  return getInstrumentTypeLabel(instrument.type)
 }
 
 const renderCurrencyCell = (instrument: Instrument) => {
-  return instrument.currency ?? 'Unavailable'
+  return getCurrencyLabel(instrument.currency)
 }
 
 const renderExchangeCell = (instrument: Instrument) => {
-  return instrument.exchange ?? 'Unavailable'
+  return getExchangeLabel(instrument.exchange)
 }
 
 const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('en-US', {
-    currency: 'USD',
+  return new Intl.NumberFormat('sv-SE', {
+    currency: 'SEK',
     maximumFractionDigits: 0,
     style: 'currency',
   }).format(value)
@@ -69,7 +74,7 @@ const ComparePage: React.FC = () => {
   const [range, setRange] = useState<CompareRange>('1M')
   const [investmentAmount, setInvestmentAmount] = useState('10000')
   const selectedCount = selectedInstruments.length
-  const countLabel = selectedCount === 1 ? 'instrument' : 'instruments'
+  const countLabel = selectedCount === 1 ? 'instrument' : 'instrument'
   const chartData = useMemo(() => {
     return getCompareChartData(selectedInstruments, range).map((point) => ({
       label: point.label,
@@ -132,19 +137,19 @@ const ComparePage: React.FC = () => {
         aria-label={`Remove ${instrument.symbol} from compare`}
         onClick={handleRemoveFromCompare}
       >
-        Remove
+        Ta bort
       </button>
     )
   }
 
   const columns = useMemo<Column<Instrument>[]>(() => {
     return [
-      { id: 'name', header: 'Name', renderCell: renderNameCell },
-      { id: 'symbol', header: 'Symbol', renderCell: renderSymbolCell },
-      { id: 'type', header: 'Type', renderCell: renderTypeCell },
-      { id: 'currency', header: 'Currency', renderCell: renderCurrencyCell },
-      { id: 'exchange', header: 'Exchange', renderCell: renderExchangeCell },
-      { id: 'actions', header: 'Actions', renderCell: renderActionCell },
+      { id: 'name', header: 'Namn', renderCell: renderNameCell },
+      { id: 'symbol', header: 'Kortnamn', renderCell: renderSymbolCell },
+      { id: 'type', header: 'Typ', renderCell: renderTypeCell },
+      { id: 'currency', header: 'Valuta', renderCell: renderCurrencyCell },
+      { id: 'exchange', header: 'Marknad', renderCell: renderExchangeCell },
+      { id: 'actions', header: 'Åtgärder', renderCell: renderActionCell },
     ]
   }, [])
 
@@ -175,27 +180,27 @@ const ComparePage: React.FC = () => {
         </header>
         <dl className={styles.statGrid}>
           <div>
-            <dt className={styles.statLabel}>Return</dt>
+            <dt className={styles.statLabel}>Avkastning</dt>
             <dd className={clsx(styles.statValue, returnClassName)}>{entry.values.returnPercent}%</dd>
           </div>
           <div>
-            <dt className={styles.statLabel}>Volatility</dt>
+            <dt className={styles.statLabel}>Volatilitet</dt>
             <dd className={styles.statValue}>{entry.values.volatility}%</dd>
           </div>
           <div>
-            <dt className={styles.statLabel}>Market cap</dt>
-            <dd className={styles.statValue}>${entry.values.marketCap}B</dd>
+            <dt className={styles.statLabel}>Börsvärde</dt>
+            <dd className={styles.statValue}>{entry.values.marketCap} mdr</dd>
           </div>
           <div>
             <dt className={styles.statLabel}>P/E</dt>
             <dd className={styles.statValue}>{entry.values.peRatio}</dd>
           </div>
           <div>
-            <dt className={styles.statLabel}>Dividend</dt>
+            <dt className={styles.statLabel}>Utdelning</dt>
             <dd className={styles.statValue}>{entry.values.dividendYield}%</dd>
           </div>
           <div>
-            <dt className={styles.statLabel}>Volume</dt>
+            <dt className={styles.statLabel}>Volym</dt>
             <dd className={styles.statValue}>{entry.values.volume.toLocaleString()}</dd>
           </div>
         </dl>
@@ -215,15 +220,15 @@ const ComparePage: React.FC = () => {
         </header>
         <dl className={styles.scenarioGrid}>
           <div>
-            <dt className={styles.statLabel}>Starting value</dt>
+            <dt className={styles.statLabel}>Startbelopp</dt>
             <dd className={styles.statValue}>{formatCurrency(startingAmount)}</dd>
           </div>
           <div>
-            <dt className={styles.statLabel}>Ending value</dt>
+            <dt className={styles.statLabel}>Slutvärde</dt>
             <dd className={styles.statValue}>{formatCurrency(entry.endingValue)}</dd>
           </div>
           <div>
-            <dt className={styles.statLabel}>Gain / loss</dt>
+            <dt className={styles.statLabel}>Vinst / förlust</dt>
             <dd className={clsx(styles.statValue, gainLossClassName)}>
               {gainLossPrefix}
               {formatCurrency(Math.abs(entry.gainLoss))}
@@ -268,26 +273,26 @@ const ComparePage: React.FC = () => {
             aria-label={`Remove ${instrument.symbol} from compare`}
             onClick={handleRemoveFromCompare}
           >
-            Remove
+            Ta bort
           </button>
         </div>
         <dl className={styles.detailGrid}>
           <div>
-            <dt className={styles.detailLabel}>Type</dt>
-            <dd className={styles.detailValue}>{instrument.type.toUpperCase()}</dd>
+            <dt className={styles.detailLabel}>Typ</dt>
+            <dd className={styles.detailValue}>{getInstrumentTypeLabel(instrument.type)}</dd>
           </div>
           <div>
-            <dt className={styles.detailLabel}>Currency</dt>
-            <dd className={styles.detailValue}>{instrument.currency ?? 'Unavailable'}</dd>
+            <dt className={styles.detailLabel}>Valuta</dt>
+            <dd className={styles.detailValue}>{getCurrencyLabel(instrument.currency)}</dd>
           </div>
           <div>
-            <dt className={styles.detailLabel}>Exchange</dt>
-            <dd className={styles.detailValue}>{instrument.exchange ?? 'Unavailable'}</dd>
+            <dt className={styles.detailLabel}>Marknad</dt>
+            <dd className={styles.detailValue}>{getExchangeLabel(instrument.exchange)}</dd>
           </div>
           <div>
-            <dt className={styles.detailLabel}>Return</dt>
+            <dt className={styles.detailLabel}>Avkastning</dt>
             <dd className={clsx(styles.detailValue, returnClassName)}>
-              {metric ? `${metric.returnPercent}%` : 'Unavailable'}
+              {metric ? `${metric.returnPercent}%` : 'Saknas'}
             </dd>
           </div>
         </dl>
@@ -299,16 +304,15 @@ const ComparePage: React.FC = () => {
     <main className={styles.page}>
       <div className={styles.shell}>
         <header className={styles.header}>
-          <p className={styles.eyebrow}>Compare</p>
-          <h1 className={styles.title}>Compare selected instruments.</h1>
+          <p className={styles.eyebrow}>Jämförelse</p>
+          <h1 className={styles.title}>Jämför valda instrument.</h1>
           <p className={styles.summary}>
-            Review selected instruments side by side before deeper performance and quote analysis
-            is added.
+            Granska valda instrument sida vid sida och få en snabb bild av utveckling och nyckeltal.
           </p>
         </header>
 
         {selectedCount === 0 && (
-          <EmptyState message="No instruments selected for comparison yet." />
+          <EmptyState message="Inga instrument har lagts till för jämförelse ännu." />
         )}
 
         {selectedCount > 0 && (
@@ -316,13 +320,13 @@ const ComparePage: React.FC = () => {
             <div className={styles.compareContent}>
               <div className={styles.toolbar}>
                 <h2 id="compare-results-heading" className={styles.instrumentName}>
-                  Selected instruments
+                  Valda instrument
                 </h2>
                 <span className={styles.count}>
                   {selectedCount} {countLabel}
                 </span>
                 <button className={styles.button} type="button" onClick={handleClearCompare}>
-                  Clear all
+                  Rensa alla
                 </button>
               </div>
 
@@ -330,10 +334,10 @@ const ComparePage: React.FC = () => {
                 <div className={styles.chartHeader}>
                   <div>
                     <h3 className={styles.chartTitle} id="compare-chart-heading">
-                      Relative performance
+                      Relativ utveckling
                     </h3>
                     <p className={styles.chartSummary}>
-                      Series are normalized to 100 so movement is easy to compare across instruments.
+                      Kurvorna är normaliserade till 100 så att utvecklingen blir enkel att jämföra mellan instrument.
                     </p>
                   </div>
                   <div className={styles.rangeControls}>{rangeOptions.map(renderRangeButton)}</div>
@@ -353,7 +357,7 @@ const ComparePage: React.FC = () => {
                 </div>
               </section>
 
-              <section className={styles.metricsGrid} aria-label="Compare metrics">
+              <section className={styles.metricsGrid} aria-label="Jämförelsemått">
                 {metrics.map(renderMetricCard)}
               </section>
 
@@ -361,19 +365,19 @@ const ComparePage: React.FC = () => {
                 <div className={styles.chartHeader}>
                   <div>
                     <h3 className={styles.chartTitle} id="compare-scenario-heading">
-                      If you invested
+                      Om du investerade vid periodens början
                     </h3>
                     <p className={styles.chartSummary}>
-                      A quick scenario view that turns relative performance into a portfolio-style outcome.
+                      Här visas vad startbeloppet hade varit värt i dag om du hade investerat det i början av den valda perioden, omräknat i svenska kronor.
                     </p>
                   </div>
                   <label className={styles.amountField}>
-                    <span className={styles.amountLabel}>Starting amount</span>
+                    <span className={styles.amountLabel}>Startbelopp i kronor</span>
                     <input
                       className={styles.amountInput}
                       type="text"
                       inputMode="numeric"
-                      aria-label="Starting investment amount"
+                      aria-label="Startbelopp i kronor"
                       value={investmentAmount}
                       onChange={handleAmountChange}
                     />

@@ -60,10 +60,10 @@ describe('when showing an instrument card', () => {
     expect(screen.getByRole('article', { name: 'Apple Inc.' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Apple Inc.' })).toBeInTheDocument()
     expect(screen.getByText('AAPL')).toBeInTheDocument()
-    expect(screen.getByText('STOCK')).toBeInTheDocument()
+    expect(screen.getByText('Aktie')).toBeInTheDocument()
     expect(screen.getByText('NASDAQ')).toBeInTheDocument()
     expect(screen.getByText('USD')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'View details' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Visa detaljer' })).toHaveAttribute(
       'href',
       '/instrument/AAPL',
     )
@@ -74,9 +74,9 @@ describe('when showing an instrument card', () => {
 
     showInstrumentCard()
 
-    await user.click(screen.getByRole('button', { name: 'Add to compare AAPL' }))
+    await user.click(screen.getByRole('button', { name: 'Lägg till i jämförelse AAPL' }))
 
-    expect(screen.getByRole('button', { name: 'Remove from compare AAPL' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Ta bort från jämförelse AAPL' })).toBeEnabled()
   })
 
   it('should allow the instrument to be saved to the watchlist', async () => {
@@ -84,8 +84,8 @@ describe('when showing an instrument card', () => {
 
     showInstrumentCard()
 
-    await user.click(screen.getByRole('button', { name: 'Add to watchlist AAPL' }))
+    await user.click(screen.getByRole('button', { name: 'Lägg till i bevakningslista AAPL' }))
 
-    expect(screen.getByRole('button', { name: 'Remove from watchlist AAPL' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Ta bort från bevakningslista AAPL' })).toBeEnabled()
   })
 })

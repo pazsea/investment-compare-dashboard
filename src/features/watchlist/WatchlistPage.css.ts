@@ -68,6 +68,7 @@ export const grid = style({
 })
 
 export const card = style({
+  position: 'relative',
   display: 'grid',
   gap: vars.space.lg,
   padding: vars.space.lg,
@@ -77,7 +78,16 @@ export const card = style({
   boxShadow: vars.shadow.sm,
 })
 
+export const stretchedLink = style({
+  position: 'absolute',
+  inset: 0,
+  zIndex: 0,
+  borderRadius: vars.radii.md,
+})
+
 export const cardHeader = style({
+  position: 'relative',
+  zIndex: 1,
   display: 'grid',
   gap: vars.space.sm,
 })
@@ -104,7 +114,84 @@ export const meta = style({
   fontSize: vars.fontSize.sm,
 })
 
+export const quotePanel = style({
+  position: 'relative',
+  zIndex: 1,
+  display: 'grid',
+  gap: vars.space.md,
+  padding: vars.space.md,
+  border: `1px solid ${vars.colors.border}`,
+  borderRadius: vars.radii.sm,
+  background: vars.colors.surfaceElevated,
+
+  '@media': {
+    [`(min-width: ${breakpoints.mobile})`]: {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+  },
+})
+
+export const quoteLabel = style({
+  display: 'block',
+  color: vars.colors.textSubtle,
+  fontSize: vars.fontSize.xs,
+  fontWeight: 700,
+  textTransform: 'uppercase',
+})
+
+export const quoteValue = style({
+  margin: `${vars.space.xs} 0 0`,
+  color: vars.colors.text,
+  fontSize: vars.fontSize.lg,
+  fontWeight: 700,
+})
+
+export const quoteChange = style({
+  margin: `${vars.space.xs} 0 0`,
+  color: vars.colors.text,
+  fontSize: vars.fontSize.md,
+  fontWeight: 700,
+})
+
+export const positive = style({
+  color: vars.colors.positive,
+})
+
+export const negative = style({
+  color: vars.colors.negative,
+})
+
+export const detailGrid = style({
+  position: 'relative',
+  zIndex: 1,
+  display: 'grid',
+  gap: vars.space.md,
+
+  '@media': {
+    [`(min-width: ${breakpoints.mobile})`]: {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+  },
+})
+
+export const detailLabel = style({
+  display: 'block',
+  color: vars.colors.textSubtle,
+  fontSize: vars.fontSize.xs,
+  fontWeight: 700,
+  textTransform: 'uppercase',
+})
+
+export const detailValue = style({
+  display: 'block',
+  marginTop: vars.space.xs,
+  color: vars.colors.text,
+  fontSize: vars.fontSize.sm,
+})
+
 export const actions = style({
+  position: 'relative',
+  zIndex: 1,
   display: 'grid',
   gridTemplateColumns: '1fr',
   gap: vars.space.sm,
@@ -132,6 +219,16 @@ export const button = style({
     cursor: 'not-allowed',
   },
 })
+
+export const actionLink = style([
+  button,
+  {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textDecoration: 'none',
+  },
+])
 
 export const removeButton = style([
   button,

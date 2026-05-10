@@ -6,6 +6,11 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useSearchInstrumentsQuery } from '../../api/instrumentsApi'
 import { useDebounce } from '../../hooks/useDebounce'
 import type { Instrument } from '../../types/instrument'
+import {
+  getCurrencyLabel,
+  getExchangeLabel,
+  getInstrumentTypeLabel,
+} from '../../utils/instrumentPresentation'
 import { OPEN_GLOBAL_SEARCH_EVENT } from '../../utils/globalSearch'
 
 import * as styles from './GlobalSearch.css'
@@ -257,9 +262,9 @@ const GlobalSearch: FC<Props> = () => {
           <span className={styles.resultBadge}>{instrument.symbol}</span>
         </div>
         <div className={styles.resultMeta}>
-          <span>{instrument.type.toUpperCase()}</span>
-          <span>{instrument.exchange ?? 'Market unavailable'}</span>
-          <span>{instrument.currency ?? 'Currency unavailable'}</span>
+          <span>{getInstrumentTypeLabel(instrument.type)}</span>
+          <span>{getExchangeLabel(instrument.exchange)}</span>
+          <span>{getCurrencyLabel(instrument.currency)}</span>
         </div>
       </button>
     )
@@ -285,8 +290,8 @@ const GlobalSearch: FC<Props> = () => {
           role="combobox"
           aria-expanded={shouldShowPanel}
           aria-controls="global-search-results"
-          aria-label="Global instrument search"
-          placeholder="Search instruments"
+          aria-label="Global instrumentsökning"
+          placeholder="Sök instrument"
           autoComplete="off"
           value={query}
           onChange={handleQueryChange}
@@ -301,15 +306,15 @@ const GlobalSearch: FC<Props> = () => {
       {shouldShowPanel && (
         <div className={styles.panel} id="global-search-results" role="listbox">
           {hasRecentSearches && (
-            <section className={styles.section} aria-label="Recent searches">
-              <p className={styles.sectionTitle}>Recent</p>
+            <section className={styles.section} aria-label="Senaste sökningar">
+              <p className={styles.sectionTitle}>Senaste</p>
               <div className={styles.resultList}>{recentItems.map(renderRecentSearch)}</div>
             </section>
           )}
 
           {shouldSearch && (
-            <section className={styles.section} aria-label="Instrument results">
-              <p className={styles.sectionTitle}>Instruments</p>
+            <section className={styles.section} aria-label="Instrumentresultat">
+              <p className={styles.sectionTitle}>Instrument</p>
 
               {isFetching && (
                 <div className={styles.skeletonList}>{[0, 1, 2].map(renderSkeleton)}</div>
@@ -319,13 +324,13 @@ const GlobalSearch: FC<Props> = () => {
                 <div className={styles.resultList}>{visibleResults.map(renderSearchResult)}</div>
               )}
 
-              {hasNoResults && <p className={styles.emptyText}>No instruments found.</p>}
+              {hasNoResults && <p className={styles.emptyText}>Inga instrument hittades.</p>}
             </section>
           )}
 
           {shouldShowQueryHint && (
-            <section className={styles.section} aria-label="Search hint">
-              <p className={styles.emptyText}>Type at least two characters to search.</p>
+            <section className={styles.section} aria-label="Söktips">
+              <p className={styles.emptyText}>Skriv minst två tecken för att söka.</p>
             </section>
           )}
         </div>

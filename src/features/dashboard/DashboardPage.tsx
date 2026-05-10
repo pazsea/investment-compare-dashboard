@@ -1,11 +1,11 @@
 import type { FC } from 'react'
 import { Link } from 'react-router-dom'
 
-import { shouldUseFmpApi } from '../../api/config'
 import { mockInstruments } from '../../mocks/instruments'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import { useWatchlist } from '../../hooks/useWatchlist'
 import type { Instrument } from '../../types/instrument'
+import { getExchangeLabel, getInstrumentTypeLabel } from '../../utils/instrumentPresentation'
 import { openGlobalSearch } from '../../utils/globalSearch'
 
 import * as styles from './DashboardPage.css'
@@ -16,8 +16,8 @@ const renderInstrumentMeta = (instrument: Instrument) => {
   return (
     <div className={styles.meta}>
       <span>{instrument.symbol}</span>
-      <span>{instrument.type.toUpperCase()}</span>
-      <span>{instrument.exchange ?? 'Market unavailable'}</span>
+      <span>{getInstrumentTypeLabel(instrument.type)}</span>
+      <span>{getExchangeLabel(instrument.exchange)}</span>
     </div>
   )
 }
@@ -67,30 +67,30 @@ const DashboardPage: FC = () => {
       <div className={styles.shell}>
         <section className={styles.hero} aria-labelledby="dashboard-title">
           <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>Investment dashboard</p>
+            <p className={styles.eyebrow}>Investment Compare</p>
             <h1 className={styles.title} id="dashboard-title">
-              Search, save, and compare instruments in one focused workspace.
+              Sök, spara och jämför instrument i ett samlat arbetsflöde.
             </h1>
             <p className={styles.summary}>
-              Use mocked data by default while developing, then opt into Financial Modeling Prep
-              when you want real market responses.
+              Använd mockad data som standard under utveckling och slå på live-sökning när du vill
+              testa riktiga marknadssvar.
             </p>
           </div>
           <button className={styles.cta} type="button" onClick={handleOpenSearch}>
-            Search instruments
+            Sök instrument
           </button>
         </section>
 
-        <section className={styles.grid} aria-label="Dashboard previews">
+        <section className={styles.grid} aria-label="Översikt">
           <article className={styles.panel}>
             <div className={styles.panelHeader}>
-              <h2 className={styles.panelTitle}>Compare</h2>
+              <h2 className={styles.panelTitle}>Jämförelse</h2>
               <Link className={styles.panelLink} to="/compare">
-                Open
+                Öppna
               </Link>
             </div>
             {comparePreview.length === 0 && (
-              <p className={styles.emptyText}>No instruments selected for comparison yet.</p>
+              <p className={styles.emptyText}>Inga instrument har lagts till för jämförelse ännu.</p>
             )}
             {comparePreview.length > 0 && (
               <ul className={styles.list}>{comparePreview.map(renderPreviewItem)}</ul>
@@ -99,38 +99,27 @@ const DashboardPage: FC = () => {
 
           <article className={styles.panel}>
             <div className={styles.panelHeader}>
-              <h2 className={styles.panelTitle}>Watchlist</h2>
+              <h2 className={styles.panelTitle}>Bevakningslista</h2>
               <Link className={styles.panelLink} to="/watchlist">
-                Open
+                Öppna
               </Link>
             </div>
             {watchlistPreview.length === 0 && (
-              <p className={styles.emptyText}>Your watchlist is ready for saved instruments.</p>
+              <p className={styles.emptyText}>Din bevakningslista är redo för instrument du vill följa.</p>
             )}
             {watchlistPreview.length > 0 && (
               <ul className={styles.list}>{watchlistPreview.map(renderPreviewItem)}</ul>
             )}
-          </article>
-
-          <article className={styles.panel}>
-            <div className={styles.panelHeader}>
-              <h2 className={styles.panelTitle}>API mode</h2>
-            </div>
-            <p className={styles.emptyText}>
-              {shouldUseFmpApi
-                ? 'Live search is on. Quote coverage still depends on your Financial Modeling Prep plan.'
-                : 'Mock mode is active, so search and details stay stable while you build.'}
-            </p>
           </article>
         </section>
 
         <section className={styles.popularSection} aria-labelledby="popular-instruments-heading">
           <div className={styles.panelHeader}>
             <h2 className={styles.panelTitle} id="popular-instruments-heading">
-              Popular instruments
+              Populära instrument
             </h2>
             <button className={styles.panelAction} type="button" onClick={handleOpenSearch}>
-              Search all
+              Sök alla
             </button>
           </div>
           <div className={styles.popularGrid}>{popularInstruments.map(renderPopularInstrument)}</div>

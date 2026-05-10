@@ -111,10 +111,10 @@ describe('when user searches for an instrument', () => {
 
     showSearchPage()
 
-    await user.type(screen.getByRole('searchbox', { name: 'Search instruments' }), 'aapl')
+    await user.type(screen.getByRole('searchbox', { name: 'Sök instrument' }), 'aapl')
 
     expect(await screen.findByRole('heading', { name: 'Apple Inc.' })).toBeInTheDocument()
     expect(screen.getByText('AAPL')).toBeInTheDocument()
-    expect(screen.getByText('1 result')).toBeInTheDocument()
+    expect(screen.getByText('1 träff')).toBeInTheDocument()
   })
 })

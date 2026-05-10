@@ -6,15 +6,16 @@ import clsx from 'clsx'
 import { useCompareSelection } from '../../hooks/useCompareSelection'
 import { useWatchlist } from '../../hooks/useWatchlist'
 import type { Instrument } from '../../types/instrument'
+import {
+  getCurrencyLabel,
+  getExchangeLabel,
+  getInstrumentTypeLabel,
+} from '../../utils/instrumentPresentation'
 
 import * as styles from './InstrumentCard.css'
 
 export type Props = {
   instrument: Instrument
-}
-
-const getInstrumentTypeLabel = (type: Instrument['type']) => {
-  return type.toUpperCase()
 }
 
 const getInstrumentDetailsPath = (symbol: string) => {
@@ -25,12 +26,12 @@ const InstrumentCard: FC<Props> = (props) => {
   const { instrument } = props
   const { addToCompare, canAddToCompare, isInCompare, removeFromCompare } = useCompareSelection()
   const { addToWatchlist, isInWatchlist, removeFromWatchlist } = useWatchlist()
-  const exchange = instrument.exchange ?? 'Market unavailable'
-  const currency = instrument.currency ?? 'Currency unavailable'
+  const exchange = getExchangeLabel(instrument.exchange)
+  const currency = getCurrencyLabel(instrument.currency)
   const isSelectedForCompare = isInCompare(instrument.symbol)
   const isSavedToWatchlist = isInWatchlist(instrument.symbol)
-  const compareButtonLabel = isSelectedForCompare ? 'Remove from compare' : 'Add to compare'
-  const watchlistButtonLabel = isSavedToWatchlist ? 'Remove from watchlist' : 'Add to watchlist'
+  const compareButtonLabel = isSelectedForCompare ? 'Ta bort från jämförelse' : 'Lägg till i jämförelse'
+  const watchlistButtonLabel = isSavedToWatchlist ? 'Ta bort från bevakningslista' : 'Lägg till i bevakningslista'
   const compareButtonClassName = clsx(styles.button, isSelectedForCompare && styles.selectedButton)
   const watchlistButtonClassName = clsx(styles.button, isSavedToWatchlist && styles.selectedButton)
   const isCompareDisabled = !isSelectedForCompare && !canAddToCompare
@@ -63,7 +64,7 @@ const InstrumentCard: FC<Props> = (props) => {
         <h2 id={`${instrument.symbol}-name`} className={styles.name}>
           {instrument.name}
         </h2>
-        <div className={styles.meta} aria-label="Instrument details">
+        <div className={styles.meta} aria-label="Instrumentdetaljer">
           <span>{exchange}</span>
           <span>{currency}</span>
         </div>
@@ -72,12 +73,12 @@ const InstrumentCard: FC<Props> = (props) => {
         className={styles.stretchedLink}
         to={getInstrumentDetailsPath(instrument.symbol)}
         state={{ instrument }}
-        aria-label={`Open ${instrument.name}`}
+        aria-label={`Öppna ${instrument.name}`}
       />
 
-      <div className={styles.actions} aria-label={`${instrument.symbol} actions`}>
+      <div className={styles.actions} aria-label={`Åtgärder för ${instrument.symbol}`}>
         <Link className={styles.action} to={getInstrumentDetailsPath(instrument.symbol)} state={{ instrument }}>
-          View details
+          Visa detaljer
         </Link>
         <button
           className={compareButtonClassName}

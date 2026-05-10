@@ -13,6 +13,7 @@ import { useWatchlist } from '../../hooks/useWatchlist'
 import { findMockInstrument } from '../../mocks/instruments'
 import { vars } from '../../styles/theme.css'
 import type { Instrument, InstrumentQuote } from '../../types/instrument'
+import { getExchangeLabel, getInstrumentTypeLabel } from '../../utils/instrumentPresentation'
 import {
   getDetailsSeries,
   getInstrumentFocus,
@@ -59,7 +60,7 @@ const formatPrice = (quote: InstrumentQuote) => {
   const currency = quote.currency ?? 'USD'
 
   try {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('sv-SE', {
       currency,
       style: 'currency',
     }).format(quote.price)
@@ -72,7 +73,7 @@ const formatCompactPrice = (quote: InstrumentQuote) => {
   const currency = quote.currency ?? 'USD'
 
   try {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('sv-SE', {
       currency,
       notation: 'compact',
       style: 'currency',
@@ -104,8 +105,8 @@ const InstrumentDetailsPage: FC = () => {
   const { addToWatchlist, isInWatchlist, removeFromWatchlist } = useWatchlist()
   const isSelectedForCompare = instrument ? isInCompare(instrument.symbol) : false
   const isSavedToWatchlist = instrument ? isInWatchlist(instrument.symbol) : false
-  const compareButtonLabel = isSelectedForCompare ? 'Remove from compare' : 'Add to compare'
-  const watchlistButtonLabel = isSavedToWatchlist ? 'Remove from watchlist' : 'Add to watchlist'
+  const compareButtonLabel = isSelectedForCompare ? 'Ta bort från jämförelse' : 'Lägg till i jämförelse'
+  const watchlistButtonLabel = isSavedToWatchlist ? 'Ta bort från bevakningslista' : 'Lägg till i bevakningslista'
   const compareButtonClassName = clsx(styles.button, isSelectedForCompare && styles.selectedButton)
   const watchlistButtonClassName = clsx(styles.button, isSavedToWatchlist && styles.selectedButton)
   const changeClassName = clsx(
@@ -153,16 +154,16 @@ const InstrumentDetailsPage: FC = () => {
       <div className={styles.shell}>
         {isFetching && (
           <LoadingState
-            title="Loading instrument details"
-            message="Pricing, exchange data, and actions are on the way."
+            title="Laddar instrumentdetaljer"
+            message="Kursdata, marknadsinformation och åtgärder är på väg."
             variant="details"
           />
         )}
 
-        {isError && <ErrorState message="Instrument details are unavailable right now." />}
+        {isError && <ErrorState message="Instrumentdetaljer är inte tillgängliga just nu." />}
 
         {!isFetching && !isError && !instrument && (
-          <EmptyState message={`No details found for ${symbol || 'this instrument'}.`} />
+          <EmptyState message={`Inga detaljer hittades för ${symbol || 'det här instrumentet'}.`} />
         )}
 
         {!isFetching && !isError && instrument && (
@@ -175,19 +176,17 @@ const InstrumentDetailsPage: FC = () => {
                     {instrument.name}
                   </h1>
                   <div className={styles.meta}>
-                    <span className={styles.badge}>{instrument.type.toUpperCase()}</span>
+                    <span className={styles.badge}>{getInstrumentTypeLabel(instrument.type)}</span>
                     {focus && <span className={styles.badge}>{focus.value}</span>}
-                    <span className={styles.badge}>
-                      {instrument.exchange ?? quote?.exchange ?? 'Market unavailable'}
-                    </span>
+                    <span className={styles.badge}>{getExchangeLabel(instrument.exchange ?? quote?.exchange)}</span>
                   </div>
                 </div>
                 <div className={styles.heroMetrics}>
                   {quote && <span className={styles.heroPrice}>{formatPrice(quote)}</span>}
                   {quote && <span className={heroChangeClassName}>{formatChange(quote)}</span>}
-                  {!quote && <span className={styles.heroPriceFallback}>Quote unavailable</span>}
+                  {!quote && <span className={styles.heroPriceFallback}>Kurs saknas</span>}
                   <span className={styles.heroCaption}>
-                    {trendLabel ?? 'Live pricing is not available for this symbol on the current API plan.'}
+                    {trendLabel ?? 'Live-prissättning är inte tillgänglig för den här symbolen i din nuvarande API-plan.'}
                   </span>
                 </div>
               </div>
@@ -198,14 +197,14 @@ const InstrumentDetailsPage: FC = () => {
                 <div className={styles.sectionHeader}>
                   <div>
                     <h2 className={styles.sectionTitle} id="instrument-performance-heading">
-                      Session performance
+                      Dagens utveckling
                     </h2>
                     <p className={styles.sectionSummary}>
-                      A compact view of recent movement anchored to the latest quote.
+                      En kompakt vy över den senaste rörelsen baserad på aktuell kurs.
                     </p>
                   </div>
                   <div className={styles.chartSummary}>
-                    <span className={styles.chartSummaryLabel}>Latest</span>
+                    <span className={styles.chartSummaryLabel}>Senaste</span>
                     <span className={styles.chartSummaryValue}>{formatCompactPrice(quote)}</span>
                   </div>
                 </div>
@@ -241,25 +240,23 @@ const InstrumentDetailsPage: FC = () => {
             <div className={styles.priceGrid}>
               {quote && (
                 <div className={styles.metric}>
-                  <span className={styles.metricLabel}>Price</span>
+                  <span className={styles.metricLabel}>Kurs</span>
                   <span className={styles.metricValue}>{formatPrice(quote)}</span>
                 </div>
               )}
               {quote && (
                 <div className={styles.metric}>
-                  <span className={styles.metricLabel}>Daily change</span>
+                  <span className={styles.metricLabel}>Dagens förändring</span>
                   <span className={changeClassName}>{formatChange(quote)}</span>
                 </div>
               )}
               <div className={styles.metric}>
-                <span className={styles.metricLabel}>Exchange</span>
-                <span className={styles.metricValue}>
-                  {instrument.exchange ?? quote?.exchange ?? 'Unavailable'}
-                </span>
+                <span className={styles.metricLabel}>Marknad</span>
+                <span className={styles.metricValue}>{getExchangeLabel(instrument.exchange ?? quote?.exchange)}</span>
               </div>
               <div className={styles.metric}>
-                <span className={styles.metricLabel}>{focus?.label ?? 'Profile'}</span>
-                <span className={styles.metricValueSmall}>{focus?.value ?? 'Unavailable'}</span>
+                <span className={styles.metricLabel}>{focus?.label ?? 'Profil'}</span>
+                <span className={styles.metricValueSmall}>{focus?.value ?? 'Saknas'}</span>
               </div>
             </div>
 
@@ -287,10 +284,10 @@ const InstrumentDetailsPage: FC = () => {
               <div className={styles.sectionHeader}>
                 <div>
                   <h2 className={styles.sectionTitle} id="instrument-about-heading">
-                    About this instrument
+                    Om instrumentet
                   </h2>
                   <p className={styles.sectionSummary}>
-                    Context designed to support quick triage during research and comparison.
+                    Kontext som hjälper dig att snabbt bedöma instrumentet inför vidare analys och jämförelse.
                   </p>
                 </div>
               </div>

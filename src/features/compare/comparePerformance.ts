@@ -17,7 +17,7 @@ export type CompareSeriesPoint = {
 }
 
 const rangeLabels: Record<CompareRange, string[]> = {
-  '1D': ['Open', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', 'Close'],
+  '1D': ['Öppning', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', 'Stängning'],
   '1W': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
   '1M': ['W1', 'W2', 'W3', 'W4'],
   '1Y': ['Jan', 'Mar', 'May', 'Jul', 'Sep', 'Nov'],

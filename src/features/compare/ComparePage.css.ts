@@ -136,6 +136,7 @@ export const desktopTable = style({
 export const chartSection = style({
   display: 'grid',
   gap: vars.space.lg,
+  overflow: 'hidden',
   padding: vars.space.lg,
   border: `1px solid ${vars.colors.border}`,
   borderRadius: vars.radii.md,
@@ -205,11 +206,12 @@ export const activeRangeButton = style({
 })
 
 export const chartViewport = style({
-  overflowX: 'auto',
+  overflow: 'hidden',
 })
 
 export const chartCanvas = style({
-  minWidth: '640px',
+  minWidth: 0,
+  width: '100%',
   height: '280px',
 })
 

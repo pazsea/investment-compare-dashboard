@@ -39,18 +39,18 @@ const AppLayout: FC<Props> = (props) => {
           </div>
           <div className={styles.links}>
             <Link className={styles.link} to="/compare">
-              Compare
+              Jämför
             </Link>
             <Link className={styles.link} to="/watchlist">
-              Watchlist
+              Bevakning
             </Link>
           </div>
-          <div className={styles.themeToggle} role="group" aria-label="Theme mode">
+          <div className={styles.themeToggle} role="group" aria-label="Tema">
             <button
               className={theme === 'light' ? styles.activeThemeOption : styles.themeOption}
               type="button"
               data-theme="light"
-              aria-label="Switch to light theme"
+              aria-label="Växla till ljust läge"
               aria-pressed={theme === 'light'}
               onClick={handleThemeSelect}
             >
@@ -60,7 +60,7 @@ const AppLayout: FC<Props> = (props) => {
               className={theme === 'dark' ? styles.activeThemeOption : styles.themeOption}
               type="button"
               data-theme="dark"
-              aria-label="Switch to dark theme"
+              aria-label="Växla till mörkt läge"
               aria-pressed={theme === 'dark'}
               onClick={handleThemeSelect}
             >

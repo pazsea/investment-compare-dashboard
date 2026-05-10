@@ -11,7 +11,7 @@ export type DetailsSeriesPoint = {
   price: number
 }
 
-const seriesLabels = ['Open', '10:00', '11:30', '13:00', '14:30', 'Close']
+const seriesLabels = ['Öppning', '10:00', '11:30', '13:00', '14:30', 'Stängning']
 
 const hashSymbol = (symbol: string) => {
   return symbol.split('').reduce((total, character) => total + character.charCodeAt(0), 0)
@@ -36,55 +36,55 @@ export const getDetailsSeries = (quote: InstrumentQuote): DetailsSeriesPoint[] =
 export const getInstrumentFocus = (instrument: Instrument) => {
   if (isStockInstrument(instrument)) {
     return {
-      label: 'Sector',
-      value: instrument.sector ?? 'Diversified operating business',
+      label: 'Sektor',
+      value: instrument.sector ?? 'Verksamhetsdrivet bolag',
     }
   }
 
   if (isEtfInstrument(instrument) || isFundInstrument(instrument)) {
     return {
-      label: 'Category',
-      value: instrument.category ?? 'Broad market exposure',
+      label: 'Kategori',
+      value: instrument.category ?? 'Bred marknadsexponering',
     }
   }
 
   if (isCryptoInstrument(instrument)) {
     return {
-      label: 'Network',
-      value: 'Digital asset market',
+      label: 'Nätverk',
+      value: 'Digital tillgångsmarknad',
     }
   }
 
   return {
-    label: 'Focus',
-    value: 'Market exposure',
+    label: 'Fokus',
+    value: 'Marknadsexponering',
   }
 }
 
 export const getInstrumentNarrative = (instrument: Instrument) => {
   if (isStockInstrument(instrument)) {
-    return `${instrument.name} is presented here as an operating company exposure with emphasis on price movement, market venue, and sector context for comparison workflows.`
+    return `${instrument.name} presenteras här som en bolagseksponering med fokus på prisrörelse, handelsplats och sektorkontext för jämförelseflöden.`
   }
 
   if (isEtfInstrument(instrument)) {
-    return `${instrument.name} gives diversified exposure that is useful when benchmarking single-name positions against an index-style allocation.`
+    return `${instrument.name} ger diversifierad exponering som är användbar när enskilda innehav ska jämföras mot en indexnära allokering.`
   }
 
   if (isFundInstrument(instrument)) {
-    return `${instrument.name} is shown as a pooled vehicle so investors can compare diversified holdings against direct equity or ETF alternatives.`
+    return `${instrument.name} visas som ett samlat fondinnehav så att diversifierade placeringar kan jämföras mot aktier eller ETF-alternativ.`
   }
 
-  return `${instrument.name} is treated as a digital asset instrument with continuous market trading and heightened short-term volatility.`
+  return `${instrument.name} behandlas som en digital tillgång med löpande handel och högre kortsiktig volatilitet.`
 }
 
 export const getTrendLabel = (quote: InstrumentQuote) => {
   if (quote.changesPercentage >= 1) {
-    return 'Positive session'
+    return 'Positiv handelsdag'
   }
 
   if (quote.changesPercentage <= -1) {
-    return 'Negative session'
+    return 'Negativ handelsdag'
   }
 
-  return 'Range bound session'
+  return 'Sidledes handelsdag'
 }
