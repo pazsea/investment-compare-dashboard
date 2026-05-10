@@ -1,18 +1,8 @@
-export interface Instrument {
-  symbol: string
-  name: string
-  type: string
-  exchange: string
-}
+import type { Instrument } from '../types/instrument'
 
-export interface InstrumentDetails extends Instrument {
-  description: string
-  currency: string
-  price: number
-  changesPercentage: number
-}
+export type { Instrument, InstrumentQuote } from '../types/instrument'
 
-export interface SearchResult {
+export type SearchResult = {
   results: Instrument[]
   total: number
 }
